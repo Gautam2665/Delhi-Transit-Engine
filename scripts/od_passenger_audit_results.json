@@ -1,0 +1,449 @@
+[
+  {
+    "origin": "Kashmere Gate",
+    "destination": "Nehru Place",
+    "departure": "2026-11-20T08:30:00+05:30",
+    "options": [
+      {
+        "option_id": 1,
+        "total_duration_min": 49.8,
+        "quiet_hour_min": 34.9,
+        "traffic_delay_min": 14.9,
+        "transfers": 0,
+        "access_walk_min": 0.0,
+        "access_walk_m": 0,
+        "wait_time_min": 9.5,
+        "bus_ride_min": 40.3,
+        "transfer_walk_min": 0,
+        "transfer_walk_m": 0,
+        "egress_walk_min": 0.0,
+        "egress_walk_m": 0,
+        "legs_count": 3,
+        "legs_summary": [
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "GGS University ISBT Kashmere Gate",
+            "to": "GGS University ISBT Kashmere Gate",
+            "duration_min": 0.0,
+            "wait_min": 0.0
+          },
+          {
+            "mode": "BUS",
+            "name": "425CLUP",
+            "from": "GGS University ISBT Kashmere Gate",
+            "to": "Nehru Place",
+            "duration_min": 40.3,
+            "wait_min": 9.5
+          },
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "Nehru Place",
+            "to": "Nehru Place",
+            "duration_min": 0.0,
+            "wait_min": 0.0
+          }
+        ]
+      },
+      {
+        "option_id": 2,
+        "total_duration_min": 50.8,
+        "quiet_hour_min": 34.8,
+        "traffic_delay_min": 16.0,
+        "transfers": 0,
+        "access_walk_min": 0.0,
+        "access_walk_m": 0,
+        "wait_time_min": 9.5,
+        "bus_ride_min": 41.3,
+        "transfer_walk_min": 0,
+        "transfer_walk_m": 0,
+        "egress_walk_min": 0.0,
+        "egress_walk_m": 0,
+        "legs_count": 3,
+        "legs_summary": [
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "GGS University ISBT Kashmere Gate",
+            "to": "GGS University ISBT Kashmere Gate",
+            "duration_min": 0.0,
+            "wait_min": 0.0
+          },
+          {
+            "mode": "BUS",
+            "name": "449UP",
+            "from": "GGS University ISBT Kashmere Gate",
+            "to": "Nehru Place",
+            "duration_min": 41.3,
+            "wait_min": 9.5
+          },
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "Nehru Place",
+            "to": "Nehru Place",
+            "duration_min": 0.0,
+            "wait_min": 0.0
+          }
+        ]
+      },
+      {
+        "option_id": 3,
+        "total_duration_min": 58.8,
+        "quiet_hour_min": 46.2,
+        "traffic_delay_min": 12.6,
+        "transfers": 1,
+        "access_walk_min": 0.0,
+        "access_walk_m": 0,
+        "wait_time_min": 19.0,
+        "bus_ride_min": 39.7,
+        "transfer_walk_min": 0,
+        "transfer_walk_m": 0,
+        "egress_walk_min": 0.0,
+        "egress_walk_m": 0,
+        "legs_count": 4,
+        "legs_summary": [
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "GGS University ISBT Kashmere Gate",
+            "to": "GGS University ISBT Kashmere Gate",
+            "duration_min": 0.0,
+            "wait_min": 0.0
+          },
+          {
+            "mode": "BUS",
+            "name": "210DOWN",
+            "from": "GGS University ISBT Kashmere Gate",
+            "to": "Red Fort",
+            "duration_min": 3.5,
+            "wait_min": 9.5
+          },
+          {
+            "mode": "BUS",
+            "name": "425UP",
+            "from": "Red Fort",
+            "to": "Nehru Place",
+            "duration_min": 36.2,
+            "wait_min": 9.5
+          },
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "Nehru Place",
+            "to": "Nehru Place",
+            "duration_min": 0.0,
+            "wait_min": 0.0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "origin": "Anand Vihar",
+    "destination": "Shivaji Stadium",
+    "departure": "2026-11-20T08:30:00+05:30",
+    "options": [
+      {
+        "option_id": 1,
+        "total_duration_min": 50.4,
+        "quiet_hour_min": 38.0,
+        "traffic_delay_min": 12.4,
+        "transfers": 1,
+        "access_walk_min": 0.0,
+        "access_walk_m": 0,
+        "wait_time_min": 19.0,
+        "bus_ride_min": 31.4,
+        "transfer_walk_min": 0,
+        "transfer_walk_m": 0,
+        "egress_walk_min": 0.0,
+        "egress_walk_m": 0,
+        "legs_count": 4,
+        "legs_summary": [
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "Anand Vihar",
+            "to": "Anand Vihar",
+            "duration_min": 0.0,
+            "wait_min": 0.0
+          },
+          {
+            "mode": "BUS",
+            "name": "39AUP",
+            "from": "Anand Vihar",
+            "to": "Swasthya Vihar / Preet Vihar",
+            "duration_min": 9.6,
+            "wait_min": 9.5
+          },
+          {
+            "mode": "BUS",
+            "name": "DS-39DOWN",
+            "from": "Swasthya Vihar / Preet Vihar",
+            "to": "Shivaji Stadium Terminal",
+            "duration_min": 21.8,
+            "wait_min": 9.5
+          },
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "Shivaji Stadium Terminal",
+            "to": "Shivaji Stadium Terminal",
+            "duration_min": 0.0,
+            "wait_min": 0.0
+          }
+        ]
+      },
+      {
+        "option_id": 2,
+        "total_duration_min": 55.6,
+        "quiet_hour_min": 41.2,
+        "traffic_delay_min": 14.4,
+        "transfers": 1,
+        "access_walk_min": 0.0,
+        "access_walk_m": 0,
+        "wait_time_min": 19.0,
+        "bus_ride_min": 36.6,
+        "transfer_walk_min": 0,
+        "transfer_walk_m": 0,
+        "egress_walk_min": 0.0,
+        "egress_walk_m": 0,
+        "legs_count": 4,
+        "legs_summary": [
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "Anand Vihar",
+            "to": "Anand Vihar",
+            "duration_min": 0.0,
+            "wait_min": 0.0
+          },
+          {
+            "mode": "BUS",
+            "name": "375DOWN",
+            "from": "Anand Vihar",
+            "to": "ITO AGCR /  ITO",
+            "duration_min": 26.5,
+            "wait_min": 9.5
+          },
+          {
+            "mode": "BUS",
+            "name": "317STLDOWN",
+            "from": "ITO AGCR /  ITO",
+            "to": "Shivaji Stadium Terminal",
+            "duration_min": 10.1,
+            "wait_min": 9.5
+          },
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "Shivaji Stadium Terminal",
+            "to": "Shivaji Stadium Terminal",
+            "duration_min": 0.0,
+            "wait_min": 0.0
+          }
+        ]
+      },
+      {
+        "option_id": 3,
+        "total_duration_min": 57.2,
+        "quiet_hour_min": 40.6,
+        "traffic_delay_min": 16.6,
+        "transfers": 1,
+        "access_walk_min": 0.0,
+        "access_walk_m": 0,
+        "wait_time_min": 19.0,
+        "bus_ride_min": 38.2,
+        "transfer_walk_min": 0,
+        "transfer_walk_m": 0,
+        "egress_walk_min": 0.0,
+        "egress_walk_m": 0,
+        "legs_count": 4,
+        "legs_summary": [
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "Anand Vihar",
+            "to": "Anand Vihar",
+            "duration_min": 0.0,
+            "wait_min": 0.0
+          },
+          {
+            "mode": "BUS",
+            "name": "473UP",
+            "from": "Anand Vihar",
+            "to": "Laxmi Nagar (Vikas Marg) / Laxmi Nagar Metro Station",
+            "duration_min": 15.3,
+            "wait_min": 9.5
+          },
+          {
+            "mode": "BUS",
+            "name": "317DOWN",
+            "from": "Laxmi Nagar (Vikas Marg) / Laxmi Nagar Metro Station",
+            "to": "Shivaji Stadium Terminal",
+            "duration_min": 22.9,
+            "wait_min": 9.5
+          },
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "Shivaji Stadium Terminal",
+            "to": "Shivaji Stadium Terminal",
+            "duration_min": 0.0,
+            "wait_min": 0.0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "origin": "28.7180, 77.0650",
+    "destination": "28.5672, 77.2100",
+    "departure": "2026-11-20T08:30:00+05:30",
+    "options": [
+      {
+        "option_id": 1,
+        "total_duration_min": 106.4,
+        "quiet_hour_min": 76.5,
+        "traffic_delay_min": 29.9,
+        "transfers": 1,
+        "access_walk_min": 1.9,
+        "access_walk_m": 134,
+        "wait_time_min": 19.0,
+        "bus_ride_min": 79.6,
+        "transfer_walk_min": 0,
+        "transfer_walk_m": 0,
+        "egress_walk_min": 6.0,
+        "egress_walk_m": 429,
+        "legs_count": 4,
+        "legs_summary": [
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "28.7180, 77.0650",
+            "to": "Rohini Sec 22 Terminal",
+            "duration_min": 1.9,
+            "wait_min": 0.0
+          },
+          {
+            "mode": "BUS",
+            "name": "569EXTDOWN",
+            "from": "Rohini Sec 22 Terminal",
+            "to": "Punjabi Bagh Club",
+            "duration_min": 39.2,
+            "wait_min": 9.5
+          },
+          {
+            "mode": "BUS",
+            "name": "567DOWN",
+            "from": "Punjabi Bagh Club",
+            "to": "AIIMS Ring Road",
+            "duration_min": 40.4,
+            "wait_min": 9.5
+          },
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "AIIMS Ring Road",
+            "to": "28.5672, 77.2100",
+            "duration_min": 6.0,
+            "wait_min": 0.0
+          }
+        ]
+      },
+      {
+        "option_id": 2,
+        "total_duration_min": 111.5,
+        "quiet_hour_min": 83.6,
+        "traffic_delay_min": 27.9,
+        "transfers": 1,
+        "access_walk_min": 6.4,
+        "access_walk_m": 459,
+        "wait_time_min": 19.0,
+        "bus_ride_min": 75.5,
+        "transfer_walk_min": 0,
+        "transfer_walk_m": 0,
+        "egress_walk_min": 10.6,
+        "egress_walk_m": 762,
+        "legs_count": 4,
+        "legs_summary": [
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "28.7180, 77.0650",
+            "to": "Begum Pur (Kanjhawala Road)",
+            "duration_min": 6.4,
+            "wait_min": 0.0
+          },
+          {
+            "mode": "BUS",
+            "name": "962DOWN",
+            "from": "Begum Pur (Kanjhawala Road)",
+            "to": "Madipur Village / CARI / P B Enclave",
+            "duration_min": 27.9,
+            "wait_min": 9.5
+          },
+          {
+            "mode": "BUS",
+            "name": "568DOWN",
+            "from": "Madipur Village / CARI / P B Enclave",
+            "to": "SJ Hospital",
+            "duration_min": 47.6,
+            "wait_min": 9.5
+          },
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "SJ Hospital",
+            "to": "28.5672, 77.2100",
+            "duration_min": 10.6,
+            "wait_min": 0.0
+          }
+        ]
+      },
+      {
+        "option_id": 3,
+        "total_duration_min": 113.0,
+        "quiet_hour_min": 74.8,
+        "traffic_delay_min": 38.2,
+        "transfers": 0,
+        "access_walk_min": 6.4,
+        "access_walk_m": 459,
+        "wait_time_min": 9.5,
+        "bus_ride_min": 86.5,
+        "transfer_walk_min": 0,
+        "transfer_walk_m": 0,
+        "egress_walk_min": 10.6,
+        "egress_walk_m": 762,
+        "legs_count": 3,
+        "legs_summary": [
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "28.7180, 77.0650",
+            "to": "Begum Pur (Kanjhawala Road)",
+            "duration_min": 6.4,
+            "wait_min": 0.0
+          },
+          {
+            "mode": "BUS",
+            "name": "962SPLDOWN",
+            "from": "Begum Pur (Kanjhawala Road)",
+            "to": "SJ Hospital",
+            "duration_min": 86.5,
+            "wait_min": 9.5
+          },
+          {
+            "mode": "WALK",
+            "name": "WALK",
+            "from": "SJ Hospital",
+            "to": "28.5672, 77.2100",
+            "duration_min": 10.6,
+            "wait_min": 0.0
+          }
+        ]
+      }
+    ]
+  }
+]

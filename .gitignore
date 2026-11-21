@@ -1,0 +1,52 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment variables & secrets
+.env
+.env.local
+.env.*.local
+
+# Next.js & Frontend dependencies/build
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+node_modules/
+.next/
+out/
+.playwright-mcp/
+
+# Testing & Pytest cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Large Raw Archives & Extracted DBs (>100MB)
+data/raw_archive/
+*.7z
+*.zip
+*.db
+*.sqlite
+*.sqlite3
+
+# Large GTFS static raw text files exceeding GitHub's 100MB limit
+data/gtfs_static/stop_times.txt
+
+# Local OS & Editor artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temporary / Scratch investigation scripts
+scratch_*.py
+inspect_db.py
+

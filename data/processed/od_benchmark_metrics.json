@@ -1,0 +1,1596 @@
+{
+  "benchmark_metadata": {
+    "execution_timestamp_utc": "2026-11-19T08:45:55.851521+00:00",
+    "evaluation_engine": "DelhiBusRouter (Corrected Phase 2 Implementation)",
+    "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+    "telemetry_note": "Evaluated against historical speed profile; live telemetry blender not active during offline benchmark.",
+    "router_architecture": "Frequency-based journey timing with timetable-based OD feasibility checks (not exact timetable-synchronized routing)"
+  },
+  "audit_validation": {
+    "artifact_metadata": {
+      "train_day_01": {
+        "path": "data\\processed\\daily_segment_obs\\bus_movements_2026_10_01.parquet",
+        "size_bytes": 3899463,
+        "modified_utc": "2026-11-18T12:27:01.537482+00:00",
+        "sha256": "07684aab4bc2026a930858f3c2dfb9b440cd3aa56bee956d4e5dfefa79127e9c"
+      },
+      "train_day_03": {
+        "path": "data\\processed\\daily_segment_obs\\bus_movements_2026_10_03.parquet",
+        "size_bytes": 4074627,
+        "modified_utc": "2026-11-18T14:07:04.735787+00:00",
+        "sha256": "6c6bb7ab261ca704275a6a708c8f54d58815258b216a2917616f04888d5b8e2d"
+      },
+      "train_day_04": {
+        "path": "data\\processed\\daily_segment_obs\\bus_movements_2026_10_04.parquet",
+        "size_bytes": 4304730,
+        "modified_utc": "2026-11-18T15:46:11.035607+00:00",
+        "sha256": "3e7b305e9217f367581bcd88221d8c5866a0e0e009731cb037bc1ea18d483b1e"
+      },
+      "val_day_29": {
+        "path": "data\\processed\\validation_obs\\bus_movements_2026_10_29.parquet",
+        "size_bytes": 3674936,
+        "modified_utc": "2026-11-18T16:14:45.295293+00:00",
+        "sha256": "62ed04f3d514cbe2f5805f09faf4de98f474a5ce0724ce634e9d2b3283a72df8"
+      },
+      "val_day_29_rejected": {
+        "path": "data\\processed\\rejected_obs\\bus_movements_2026_10_29_rejected.parquet",
+        "size_bytes": 2225621,
+        "modified_utc": "2026-11-18T16:14:45.450129+00:00",
+        "sha256": "8b38c88e017f7a1ac82535d0b4f495e6f07e95ebbe59138b878042dc194b0973"
+      },
+      "speed_profile": {
+        "path": "data\\processed\\speed_profile.parquet",
+        "size_bytes": 11018307,
+        "modified_utc": "2026-11-18T19:14:09.727316+00:00",
+        "sha256": "1a248723d955aa11e6e8c9a326e25634891ad23348f486e615525c5a0adaf279"
+      },
+      "segments": {
+        "path": "data\\processed\\segments.parquet",
+        "size_bytes": 2788016,
+        "modified_utc": "2026-11-18T11:14:14.167785+00:00",
+        "sha256": "a315209e050924e2e2b5d46ef2f41fe0fe52786f4a24d972fb0fda3de976695e"
+      }
+    },
+    "training_exclusion_verified": true,
+    "approved_training_manifest": [
+      "bus_movements_2026_10_01",
+      "bus_movements_2026_10_03",
+      "bus_movements_2026_10_04"
+    ],
+    "held_out_validation_stem": "bus_movements_2026_10_29",
+    "total_raw_observations": 1412573,
+    "qc_excluded_observations": 264825,
+    "eligible_observations": 1147748,
+    "matched_observations": 1147748,
+    "unmatched_observations": 0,
+    "coverage_pct": 100.0,
+    "exclusion_reasons": {
+      "PING_GAP_TOO_LARGE": 209920,
+      "SPEED_TOO_HIGH": 28987,
+      "DT_TOO_SMALL": 17904,
+      "SPEED_TOO_LOW": 6201,
+      "NON_POSITIVE_DISTANCE": 1813
+    },
+    "route_count_reconciliation": {
+      "authoritative_total_gtfs_routes": 2574,
+      "agency_breakdown": {
+        "DTC": 1814,
+        "DIMTS": 760
+      },
+      "active_0800_peak": 1726,
+      "active_2300_late_night": 1018,
+      "active_both_0800_and_2300": 669,
+      "active_0800_only": 1057,
+      "active_2300_only": 349,
+      "active_union_0800_or_2300": 2075,
+      "inactive_both_0800_and_2300": 499,
+      "inactive_both_label": "Inactive at both audit times (08:00 and 23:00); service patterns outside these probe hours remain uncharacterized unless further schedule analysis is conducted.",
+      "set_operations_formal": {
+        "R_universe": "routes.txt route_id set (size 2,574)",
+        "R_08": "Routes with departure_time in [08:00:00, 08:59:59] (size 1,726)",
+        "R_23": "Routes with departure_time in [23:00:00, 23:59:59] (size 1,018)",
+        "R_both": "R_08 INTERSECT R_23 (size 669)",
+        "R_08_only": "R_08 MINUS R_23 (size 1,057)",
+        "R_23_only": "R_23 MINUS R_08 (size 349)",
+        "R_union": "R_08 UNION R_23 (size 2,075)",
+        "R_inactive_both": "R_universe MINUS (R_08 UNION R_23) (size 499)"
+      },
+      "observed_in_training_oct_01_03_04": 2038,
+      "observed_in_validation_oct_29": 2023,
+      "observed_any_day_all_4_days": 2112,
+      "unobserved_any_day": 462,
+      "unobserved_routes_limitation": "Absence of 462 routes from the 4 sampled telemetry dates indicates only that zero valid GPS pings mapped to these routes on those dates; it does not establish the root operational cause (e.g. unscheduled, telemetry hardware offline, or canceled)."
+    }
+  },
+  "corridor_reconstruction": {
+    "metric_label": "SUMMED_SEGMENT_OBSERVATION_TIME",
+    "dwell_treatment": "Intermediate segment observation durations summed (includes on-link deceleration, passenger boarding/alighting dwell, and traffic delays); terminal turnaround layovers excluded.",
+    "observed_interval_definition": "Elapsed time between linear-interpolated shape crossings at origin and destination stop coordinates (t_end - t_start).",
+    "scheduled_interval_definition": "Difference between GTFS scheduled arrival/departure times across consecutive stops.",
+    "statistical_definitions": {
+      "MAE": "Mean Absolute Error: (1/N) * sum(|y_true - y_pred|)",
+      "RMSE": "Root Mean Squared Error: sqrt((1/N) * sum((y_true - y_pred)^2))",
+      "Bias": "Mean Signed Error: (1/N) * sum(y_pred - y_true)",
+      "MedAE": "Median Absolute Error: median(|y_true - y_pred|)"
+    },
+    "evaluated_corridors_count": 1168,
+    "unique_shapes_represented": 595,
+    "service_dates_represented": [
+      "2026-10-29"
+    ],
+    "mean_corridor_stops": 5.4,
+    "mean_corridor_length_km": 2.96,
+    "corridor_mae_sec": 85.34,
+    "corridor_rmse_sec": 125.95,
+    "corridor_median_ae_sec": 59.05,
+    "corridor_mean_bias_sec": -0.73,
+    "corridor_sched_mae_sec": 137.1,
+    "corridor_sched_rmse_sec": 212.35,
+    "corridor_mae_gain_pct": 37.75,
+    "corridor_rmse_gain_pct": 40.69,
+    "methodology_status": "WITHDRAWN_AS_SAME_VEHICLE_EVIDENCE",
+    "audit_findings": {
+      "chimeric_concatenation_proven": true,
+      "trace_example_corridor_0": {
+        "shape_id": "shp_3_1003",
+        "sequence_break": "Row seq=0..3 occurred at hour 15 (durations: 101.7s, 178.3s, 24.1s, 36.3s), followed immediately by row seq=4 at hour 6 (75.7s), representing a 9-hour backwards temporal discontinuity.",
+        "underlying_cause": "Validation Parquet (bus_movements_2026_10_29.parquet) only retains [segment_id, dow, hour, duration_sec]. Vehicle ID, trip ID, and raw pings were discarded during extraction to optimize storage. Sorting by [shape_id, seq] arbitrarily concatenated observations from different buses and times of day."
+      },
+      "three_level_metric_distinction": {
+        "segment_prediction_accuracy": "Held-out single-segment evaluation on 1,147,748 physical observations (MAE 24.20s vs Sched 34.94s, +30.74% error reduction) is empirically verified, zero-leakage, and completely valid.",
+        "shape_aggregation": "Sum of speed-profile segment predictions along a route link sequence; valid as expected static route traversal time under profile speeds.",
+        "same_vehicle_corridor_accuracy": "Evaluating actual end-to-end journey time of a single bus requires continuous vehicle/trip identifiers and monotonic timestamps, which are absent in the segment parquet. Hence, corridor MAE/RMSE is withdrawn as same-vehicle evidence."
+      }
+    },
+    "test_semantics": {
+      "unit_test_scope": "test_corridor_continuity_logic() validates synthetic vehicle-aware grouping helper logic ONLY under simulated vehicle-aware records.",
+      "production_parquet_status": "Does NOT validate production Parquet-based corridor reconstruction, where vehicle_id, trip_id, and timestamps were discarded during ingestion. Production same-vehicle continuity cannot be claimed from segment parquets.",
+      "withdrawn_metrics": {
+        "evaluated_corridors_count": 1168,
+        "status": "WITHDRAWN_AS_SAME_VEHICLE_EVIDENCE",
+        "corridor_mae_sec": 85.34,
+        "corridor_rmse_sec": 125.95,
+        "explanation": "Measures topological sum of speed-profile segment estimates on consecutive links, NOT observed same-bus passenger journey time."
+      }
+    }
+  },
+  "od_benchmark_results": [
+    {
+      "od_id": 1,
+      "corridor_description": "Kashmere Gate ISBT -> Nehru Place",
+      "origin": {
+        "stop_id": "7571",
+        "stop_name": "GGS University ISBT Kashmere Gate",
+        "lat": 28.66547562688361,
+        "lon": 77.2301732003689
+      },
+      "destination": {
+        "stop_id": "2559",
+        "stop_name": "Nehru Place",
+        "lat": 28.54857609786973,
+        "lon": 77.24913317314967
+      },
+      "scenarios": {
+        "tuesday_0830": {
+          "status": "CONFIRMED",
+          "passenger_journey_feasible": true,
+          "duration_estimate_type": "VALIDATED_FEASIBLE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T08:30:00+05:30",
+          "route_level_scheduled_active": true,
+          "od_level_timetable_confirmed": true,
+          "service_notes": "All route legs confirmed active with departures after requested time.",
+          "leg_od_timetable_details": [
+            {
+              "available": true,
+              "next_departure": "08:44:03",
+              "trips_remaining": 15,
+              "route_id": "3666",
+              "route_name": "425CLUP",
+              "from_stop_id": "7571",
+              "to_stop_id": "2559"
+            }
+          ],
+          "total_duration_min": 49.8,
+          "quiet_hour_duration_min": 34.9,
+          "traffic_delay_min": 14.9,
+          "transfers": 0,
+          "access_walk_min": 0.0,
+          "waiting_time_min": 9.5,
+          "bus_travel_time_min": 40.3,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.0,
+          "routes_used": [
+            "3666"
+          ],
+          "route_names": [
+            "425CLUP"
+          ],
+          "estimated_arrival": "2026-10-27T09:19:48.300000+05:30"
+        },
+        "tuesday_2300": {
+          "status": "UNAVAILABLE",
+          "passenger_journey_feasible": false,
+          "duration_estimate_type": "HYPOTHETICAL_SERVICE_ENDED",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T23:00:00+05:30",
+          "route_level_scheduled_active": false,
+          "od_level_timetable_confirmed": false,
+          "service_notes": "OD timetable check failed: ['SERVICE_ENDED_EARLIER (Last departure: 20:25:58)']",
+          "leg_od_timetable_details": [
+            {
+              "available": false,
+              "reason": "SERVICE_ENDED_EARLIER (Last departure: 20:25:58)",
+              "route_id": "1960",
+              "route_name": "449UP",
+              "from_stop_id": "7571",
+              "to_stop_id": "2559"
+            }
+          ],
+          "total_duration_min": 46.2,
+          "quiet_hour_duration_min": 38.8,
+          "traffic_delay_min": 7.4,
+          "transfers": 0,
+          "access_walk_min": 0.0,
+          "waiting_time_min": 13.5,
+          "bus_travel_time_min": 32.6,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.0,
+          "routes_used": [
+            "1960"
+          ],
+          "route_names": [
+            "449UP"
+          ],
+          "estimated_arrival": "2026-10-27T23:46:09+05:30"
+        }
+      }
+    },
+    {
+      "od_id": 2,
+      "corridor_description": "Anand Vihar ISBT -> Shivaji Stadium (Connaught Place)",
+      "origin": {
+        "stop_id": "7699",
+        "stop_name": "Anand Vihar ISBT Main Road",
+        "lat": 28.647011,
+        "lon": 77.317959
+      },
+      "destination": {
+        "stop_id": "365",
+        "stop_name": "Shivaji Stadium Terminal ( Connaught Place )",
+        "lat": 28.6323,
+        "lon": 77.2165
+      },
+      "scenarios": {
+        "tuesday_0830": {
+          "status": "CONFIRMED",
+          "passenger_journey_feasible": true,
+          "duration_estimate_type": "VALIDATED_FEASIBLE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T08:30:00+05:30",
+          "route_level_scheduled_active": true,
+          "od_level_timetable_confirmed": true,
+          "service_notes": "All route legs confirmed active with departures after requested time.",
+          "leg_od_timetable_details": [
+            {
+              "available": true,
+              "next_departure": "08:38:04",
+              "trips_remaining": 32,
+              "route_id": "1151",
+              "route_name": "943UP",
+              "from_stop_id": "7699",
+              "to_stop_id": "365"
+            }
+          ],
+          "total_duration_min": 51.8,
+          "quiet_hour_duration_min": 30.3,
+          "traffic_delay_min": 21.5,
+          "transfers": 0,
+          "access_walk_min": 0.0,
+          "waiting_time_min": 9.5,
+          "bus_travel_time_min": 42.3,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.0,
+          "routes_used": [
+            "1151"
+          ],
+          "route_names": [
+            "943UP"
+          ],
+          "estimated_arrival": "2026-10-27T09:21:50.100000+05:30"
+        },
+        "tuesday_2300": {
+          "status": "UNAVAILABLE",
+          "passenger_journey_feasible": false,
+          "duration_estimate_type": "HYPOTHETICAL_SERVICE_ENDED",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T23:00:00+05:30",
+          "route_level_scheduled_active": false,
+          "od_level_timetable_confirmed": false,
+          "service_notes": "OD timetable check failed: ['SERVICE_ENDED_EARLIER (Last departure: 21:06:04)']",
+          "leg_od_timetable_details": [
+            {
+              "available": false,
+              "reason": "SERVICE_ENDED_EARLIER (Last departure: 21:06:04)",
+              "route_id": "1151",
+              "route_name": "943UP",
+              "from_stop_id": "7699",
+              "to_stop_id": "365"
+            }
+          ],
+          "total_duration_min": 41.9,
+          "quiet_hour_duration_min": 34.3,
+          "traffic_delay_min": 7.6,
+          "transfers": 0,
+          "access_walk_min": 0.0,
+          "waiting_time_min": 13.5,
+          "bus_travel_time_min": 28.4,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.0,
+          "routes_used": [
+            "1151"
+          ],
+          "route_names": [
+            "943UP"
+          ],
+          "estimated_arrival": "2026-10-27T23:41:52.500000+05:30"
+        }
+      }
+    },
+    {
+      "od_id": 3,
+      "corridor_description": "Rohini Sec 22 Terminal -> Kashmere Gate ISBT",
+      "origin": {
+        "stop_id": "1",
+        "stop_name": "Rohini Sec 22 Terminal",
+        "lat": 28.71797103184126,
+        "lon": 77.06389993096785
+      },
+      "destination": {
+        "stop_id": "7571",
+        "stop_name": "GGS University ISBT Kashmere Gate",
+        "lat": 28.66547562688361,
+        "lon": 77.2301732003689
+      },
+      "scenarios": {
+        "tuesday_0830": {
+          "status": "CONFIRMED",
+          "passenger_journey_feasible": true,
+          "duration_estimate_type": "VALIDATED_FEASIBLE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T08:30:00+05:30",
+          "route_level_scheduled_active": false,
+          "od_level_timetable_confirmed": true,
+          "service_notes": "All route legs confirmed active with departures after requested time.",
+          "leg_od_timetable_details": [
+            {
+              "available": true,
+              "next_departure": "21:15:00",
+              "trips_remaining": 3,
+              "route_id": "1487",
+              "route_name": "0901(NS)DOWN",
+              "from_stop_id": "1",
+              "to_stop_id": "7571"
+            }
+          ],
+          "total_duration_min": 79.1,
+          "quiet_hour_duration_min": 50.2,
+          "traffic_delay_min": 28.9,
+          "transfers": 0,
+          "access_walk_min": 0.0,
+          "waiting_time_min": 9.5,
+          "bus_travel_time_min": 69.6,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.0,
+          "routes_used": [
+            "1487"
+          ],
+          "route_names": [
+            "0901(NS)DOWN"
+          ],
+          "estimated_arrival": "2026-10-27T09:49:08.800000+05:30"
+        },
+        "tuesday_2300": {
+          "status": "CONFIRMED",
+          "passenger_journey_feasible": true,
+          "duration_estimate_type": "FEASIBLE_NIGHT_SERVICE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T23:00:00+05:30",
+          "route_level_scheduled_active": true,
+          "od_level_timetable_confirmed": true,
+          "service_notes": "All route legs confirmed active with departures after requested time.",
+          "leg_od_timetable_details": [
+            {
+              "available": true,
+              "next_departure": "23:15:00",
+              "trips_remaining": 1,
+              "route_id": "1487",
+              "route_name": "0901(NS)DOWN",
+              "from_stop_id": "1",
+              "to_stop_id": "7571"
+            }
+          ],
+          "total_duration_min": 61.0,
+          "quiet_hour_duration_min": 54.2,
+          "traffic_delay_min": 6.8,
+          "transfers": 0,
+          "access_walk_min": 0.0,
+          "waiting_time_min": 13.5,
+          "bus_travel_time_min": 47.5,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.0,
+          "routes_used": [
+            "1487"
+          ],
+          "route_names": [
+            "0901(NS)DOWN"
+          ],
+          "estimated_arrival": "2026-10-28T00:00:57.900000+05:30"
+        }
+      }
+    },
+    {
+      "od_id": 4,
+      "corridor_description": "Uttam Nagar Terminal -> Nehru Place",
+      "origin": {
+        "stop_id": "6233",
+        "stop_name": "Uttam Nagar Terminal",
+        "lat": 28.62534329140408,
+        "lon": 77.06685574926142
+      },
+      "destination": {
+        "stop_id": "2559",
+        "stop_name": "Nehru Place",
+        "lat": 28.54857609786973,
+        "lon": 77.24913317314967
+      },
+      "scenarios": {
+        "tuesday_0830": {
+          "status": "CONFIRMED",
+          "passenger_journey_feasible": true,
+          "duration_estimate_type": "VALIDATED_FEASIBLE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T08:30:00+05:30",
+          "route_level_scheduled_active": true,
+          "od_level_timetable_confirmed": true,
+          "service_notes": "All route legs confirmed active with departures after requested time.",
+          "leg_od_timetable_details": [
+            {
+              "available": true,
+              "next_departure": "08:30:33",
+              "trips_remaining": 47,
+              "route_id": "2195",
+              "route_name": "724UP",
+              "from_stop_id": "3612",
+              "to_stop_id": "2559"
+            }
+          ],
+          "total_duration_min": 78.7,
+          "quiet_hour_duration_min": 51.4,
+          "traffic_delay_min": 27.3,
+          "transfers": 0,
+          "access_walk_min": 2.0,
+          "waiting_time_min": 9.5,
+          "bus_travel_time_min": 67.2,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.0,
+          "routes_used": [
+            "2195"
+          ],
+          "route_names": [
+            "724UP"
+          ],
+          "estimated_arrival": "2026-10-27T09:48:44.674380+05:30"
+        },
+        "tuesday_2300": {
+          "status": "UNAVAILABLE",
+          "passenger_journey_feasible": false,
+          "duration_estimate_type": "HYPOTHETICAL_SERVICE_ENDED",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T23:00:00+05:30",
+          "route_level_scheduled_active": false,
+          "od_level_timetable_confirmed": false,
+          "service_notes": "OD timetable check failed: ['SERVICE_ENDED_EARLIER (Last departure: 18:20:00)']",
+          "leg_od_timetable_details": [
+            {
+              "available": false,
+              "reason": "SERVICE_ENDED_EARLIER (Last departure: 18:20:00)",
+              "route_id": "1011",
+              "route_name": "874EUP",
+              "from_stop_id": "7975",
+              "to_stop_id": "2559"
+            }
+          ],
+          "total_duration_min": 64.7,
+          "quiet_hour_duration_min": 54.7,
+          "traffic_delay_min": 10.0,
+          "transfers": 0,
+          "access_walk_min": 1.0,
+          "waiting_time_min": 13.5,
+          "bus_travel_time_min": 50.2,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.0,
+          "routes_used": [
+            "1011"
+          ],
+          "route_names": [
+            "874EUP"
+          ],
+          "estimated_arrival": "2026-10-28T00:04:43.125947+05:30"
+        }
+      }
+    },
+    {
+      "od_id": 5,
+      "corridor_description": "ISBT Sarai Kale Khan -> Dhaula Kuan",
+      "origin": {
+        "stop_id": "2078",
+        "stop_name": "ISBT Sarai Kale Khan",
+        "lat": 28.590868,
+        "lon": 77.25817
+      },
+      "destination": {
+        "stop_id": "2920",
+        "stop_name": "ARSD College ( Dhaula Kuan)",
+        "lat": 28.59077066189948,
+        "lon": 77.16838493932302
+      },
+      "scenarios": {
+        "tuesday_0830": {
+          "status": "CONFIRMED",
+          "passenger_journey_feasible": true,
+          "duration_estimate_type": "VALIDATED_FEASIBLE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T08:30:00+05:30",
+          "route_level_scheduled_active": true,
+          "od_level_timetable_confirmed": true,
+          "service_notes": "All route legs confirmed active with departures after requested time.",
+          "leg_od_timetable_details": [
+            {
+              "available": true,
+              "next_departure": "08:32:00",
+              "trips_remaining": 48,
+              "route_id": "2086",
+              "route_name": "567UP",
+              "from_stop_id": "2714",
+              "to_stop_id": "2920"
+            }
+          ],
+          "total_duration_min": 54.2,
+          "quiet_hour_duration_min": 41.0,
+          "traffic_delay_min": 13.2,
+          "transfers": 0,
+          "access_walk_min": 8.5,
+          "waiting_time_min": 9.5,
+          "bus_travel_time_min": 36.3,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.0,
+          "routes_used": [
+            "2086"
+          ],
+          "route_names": [
+            "567UP"
+          ],
+          "estimated_arrival": "2026-10-27T09:24:14.366870+05:30"
+        },
+        "tuesday_2300": {
+          "status": "GRAPH_ONLY",
+          "passenger_journey_feasible": false,
+          "duration_estimate_type": "HYPOTHETICAL_GRAPH_ONLY",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T23:00:00+05:30",
+          "route_level_scheduled_active": true,
+          "od_level_timetable_confirmed": false,
+          "service_notes": "OD timetable check failed: ['SERVICE_ENDED_EARLIER (Last departure: 21:54:54)']",
+          "leg_od_timetable_details": [
+            {
+              "available": false,
+              "reason": "SERVICE_ENDED_EARLIER (Last departure: 21:54:54)",
+              "route_id": "2066",
+              "route_name": "543AUP",
+              "from_stop_id": "2714",
+              "to_stop_id": "2920"
+            }
+          ],
+          "total_duration_min": 49.4,
+          "quiet_hour_duration_min": 46.3,
+          "traffic_delay_min": 3.1,
+          "transfers": 0,
+          "access_walk_min": 8.5,
+          "waiting_time_min": 13.5,
+          "bus_travel_time_min": 27.5,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.0,
+          "routes_used": [
+            "2066"
+          ],
+          "route_names": [
+            "543AUP"
+          ],
+          "estimated_arrival": "2026-10-27T23:49:26.366870+05:30"
+        }
+      }
+    },
+    {
+      "od_id": 6,
+      "corridor_description": "Azadpur Terminal -> Badarpur Border (T)",
+      "origin": {
+        "stop_id": "7587",
+        "stop_name": "Azadpur Terminal",
+        "lat": 28.707677,
+        "lon": 77.178164
+      },
+      "destination": {
+        "stop_id": "2640",
+        "stop_name": "Badarpur Border (T)",
+        "lat": 28.49313011545189,
+        "lon": 77.30372712033363
+      },
+      "scenarios": {
+        "tuesday_0830": {
+          "status": "CONFIRMED",
+          "passenger_journey_feasible": true,
+          "duration_estimate_type": "VALIDATED_FEASIBLE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T08:30:00+05:30",
+          "route_level_scheduled_active": true,
+          "od_level_timetable_confirmed": true,
+          "service_notes": "All route legs confirmed active with departures after requested time.",
+          "leg_od_timetable_details": [
+            {
+              "available": true,
+              "next_departure": "08:46:24",
+              "trips_remaining": 23,
+              "route_id": "123",
+              "route_name": "136DOWN",
+              "from_stop_id": "97",
+              "to_stop_id": "7571"
+            },
+            {
+              "available": true,
+              "next_departure": "08:38:25",
+              "trips_remaining": 97,
+              "route_id": "1900",
+              "route_name": "405UP",
+              "from_stop_id": "7571",
+              "to_stop_id": "2640"
+            }
+          ],
+          "total_duration_min": 99.8,
+          "quiet_hour_duration_min": 77.8,
+          "traffic_delay_min": 22.0,
+          "transfers": 1,
+          "access_walk_min": 4.1,
+          "waiting_time_min": 19.0,
+          "bus_travel_time_min": 76.7,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.0,
+          "routes_used": [
+            "123",
+            "1900"
+          ],
+          "route_names": [
+            "136DOWN",
+            "405UP"
+          ],
+          "estimated_arrival": "2026-10-27T10:09:49.125476+05:30"
+        },
+        "tuesday_2300": {
+          "status": "CONFIRMED",
+          "passenger_journey_feasible": true,
+          "duration_estimate_type": "FEASIBLE_NIGHT_SERVICE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T23:00:00+05:30",
+          "route_level_scheduled_active": true,
+          "od_level_timetable_confirmed": true,
+          "service_notes": "All route legs confirmed active with departures after requested time.",
+          "leg_od_timetable_details": [
+            {
+              "available": true,
+              "next_departure": "23:02:59",
+              "trips_remaining": 2,
+              "route_id": "1487",
+              "route_name": "0901(NS)DOWN",
+              "from_stop_id": "97",
+              "to_stop_id": "4824"
+            },
+            {
+              "available": true,
+              "next_departure": "23:17:36",
+              "trips_remaining": 1,
+              "route_id": "1900",
+              "route_name": "405UP",
+              "from_stop_id": "4824",
+              "to_stop_id": "2640"
+            }
+          ],
+          "total_duration_min": 86.5,
+          "quiet_hour_duration_min": 83.0,
+          "traffic_delay_min": 3.5,
+          "transfers": 1,
+          "access_walk_min": 4.1,
+          "waiting_time_min": 27.0,
+          "bus_travel_time_min": 55.4,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.0,
+          "routes_used": [
+            "1487",
+            "1900"
+          ],
+          "route_names": [
+            "0901(NS)DOWN",
+            "405UP"
+          ],
+          "estimated_arrival": "2026-10-28T00:26:31.325476+05:30"
+        }
+      }
+    },
+    {
+      "od_id": 7,
+      "corridor_description": "Najafgarh Terminal -> Sant Pura Tilak Nagar",
+      "origin": {
+        "stop_id": "3232",
+        "stop_name": "Najafgarh Terminal",
+        "lat": 28.614831,
+        "lon": 76.977249
+      },
+      "destination": {
+        "stop_id": "4069",
+        "stop_name": "Sant Pura Tilak Nagar",
+        "lat": 28.638567,
+        "lon": 77.100583
+      },
+      "scenarios": {
+        "tuesday_0830": {
+          "status": "CONFIRMED",
+          "passenger_journey_feasible": true,
+          "duration_estimate_type": "VALIDATED_FEASIBLE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T08:30:00+05:30",
+          "route_level_scheduled_active": true,
+          "od_level_timetable_confirmed": true,
+          "service_notes": "All route legs confirmed active with departures after requested time.",
+          "leg_od_timetable_details": [
+            {
+              "available": true,
+              "next_departure": "08:33:49",
+              "trips_remaining": 48,
+              "route_id": "862",
+              "route_name": "817DOWN",
+              "from_stop_id": "4142",
+              "to_stop_id": "4064"
+            }
+          ],
+          "total_duration_min": 60.5,
+          "quiet_hour_duration_min": 40.5,
+          "traffic_delay_min": 20.0,
+          "transfers": 0,
+          "access_walk_min": 6.4,
+          "waiting_time_min": 9.5,
+          "bus_travel_time_min": 44.2,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.4,
+          "routes_used": [
+            "862"
+          ],
+          "route_names": [
+            "817DOWN"
+          ],
+          "estimated_arrival": "2026-10-27T09:30:30.051726+05:30"
+        },
+        "tuesday_2300": {
+          "status": "UNAVAILABLE",
+          "passenger_journey_feasible": false,
+          "duration_estimate_type": "HYPOTHETICAL_SERVICE_ENDED",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T23:00:00+05:30",
+          "route_level_scheduled_active": false,
+          "od_level_timetable_confirmed": false,
+          "service_notes": "OD timetable check failed: ['SERVICE_ENDED_EARLIER (Last departure: 16:48:38)']",
+          "leg_od_timetable_details": [
+            {
+              "available": false,
+              "reason": "SERVICE_ENDED_EARLIER (Last departure: 16:48:38)",
+              "route_id": "915",
+              "route_name": "828DOWN",
+              "from_stop_id": "4142",
+              "to_stop_id": "4064"
+            }
+          ],
+          "total_duration_min": 56.0,
+          "quiet_hour_duration_min": 42.9,
+          "traffic_delay_min": 13.1,
+          "transfers": 0,
+          "access_walk_min": 6.4,
+          "waiting_time_min": 13.5,
+          "bus_travel_time_min": 35.8,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.4,
+          "routes_used": [
+            "915"
+          ],
+          "route_names": [
+            "828DOWN"
+          ],
+          "estimated_arrival": "2026-10-27T23:56:02.951726+05:30"
+        }
+      }
+    },
+    {
+      "od_id": 8,
+      "corridor_description": "Mehrauli Terminal -> New Delhi Railway Station Gate 2",
+      "origin": {
+        "stop_id": "7908",
+        "stop_name": "Mehrauli Terminal",
+        "lat": 28.521316,
+        "lon": 77.183047
+      },
+      "destination": {
+        "stop_id": "1574",
+        "stop_name": "New Delhi Railway Station Gate 2",
+        "lat": 28.64176763090596,
+        "lon": 77.22359244868193
+      },
+      "scenarios": {
+        "tuesday_0830": {
+          "status": "CONFIRMED",
+          "passenger_journey_feasible": true,
+          "duration_estimate_type": "VALIDATED_FEASIBLE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T08:30:00+05:30",
+          "route_level_scheduled_active": true,
+          "od_level_timetable_confirmed": true,
+          "service_notes": "All route legs confirmed active with departures after requested time.",
+          "leg_od_timetable_details": [
+            {
+              "available": true,
+              "next_departure": "08:50:00",
+              "trips_remaining": 37,
+              "route_id": "1999",
+              "route_name": "505DOWN",
+              "from_stop_id": "7908",
+              "to_stop_id": "1561"
+            }
+          ],
+          "total_duration_min": 59.6,
+          "quiet_hour_duration_min": 44.5,
+          "traffic_delay_min": 15.1,
+          "transfers": 0,
+          "access_walk_min": 0.0,
+          "waiting_time_min": 9.5,
+          "bus_travel_time_min": 44.0,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 6.1,
+          "routes_used": [
+            "1999"
+          ],
+          "route_names": [
+            "505DOWN"
+          ],
+          "estimated_arrival": "2026-10-27T09:29:36.229090+05:30"
+        },
+        "tuesday_2300": {
+          "status": "UNAVAILABLE",
+          "passenger_journey_feasible": false,
+          "duration_estimate_type": "HYPOTHETICAL_SERVICE_ENDED",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T23:00:00+05:30",
+          "route_level_scheduled_active": false,
+          "od_level_timetable_confirmed": false,
+          "service_notes": "OD timetable check failed: ['SERVICE_ENDED_EARLIER (Last departure: 21:50:00)']",
+          "leg_od_timetable_details": [
+            {
+              "available": false,
+              "reason": "SERVICE_ENDED_EARLIER (Last departure: 21:50:00)",
+              "route_id": "1999",
+              "route_name": "505DOWN",
+              "from_stop_id": "7908",
+              "to_stop_id": "1562"
+            }
+          ],
+          "total_duration_min": 51.1,
+          "quiet_hour_duration_min": 47.4,
+          "traffic_delay_min": 3.7,
+          "transfers": 0,
+          "access_walk_min": 0.0,
+          "waiting_time_min": 13.5,
+          "bus_travel_time_min": 33.4,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 4.3,
+          "routes_used": [
+            "1999"
+          ],
+          "route_names": [
+            "505DOWN"
+          ],
+          "estimated_arrival": "2026-10-27T23:51:08.617965+05:30"
+        }
+      }
+    },
+    {
+      "od_id": 9,
+      "corridor_description": "Jahangirpuri Metro -> Safdurjung Hospital / AIIMS",
+      "origin": {
+        "stop_id": "7594",
+        "stop_name": "Jahangirpuri Metro Station GT Road",
+        "lat": 28.72590180115854,
+        "lon": 77.16280918341722
+      },
+      "destination": {
+        "stop_id": "2997",
+        "stop_name": "Safdurjung Hospital / AIIMS",
+        "lat": 28.56725,
+        "lon": 77.207733
+      },
+      "scenarios": {
+        "tuesday_0830": {
+          "status": "CONFIRMED",
+          "passenger_journey_feasible": true,
+          "duration_estimate_type": "VALIDATED_FEASIBLE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T08:30:00+05:30",
+          "route_level_scheduled_active": true,
+          "od_level_timetable_confirmed": true,
+          "service_notes": "All route legs confirmed active with departures after requested time.",
+          "leg_od_timetable_details": [
+            {
+              "available": true,
+              "next_departure": "08:59:23",
+              "trips_remaining": 13,
+              "route_id": "119",
+              "route_name": "135DOWN",
+              "from_stop_id": "7594",
+              "to_stop_id": "338"
+            },
+            {
+              "available": true,
+              "next_departure": "08:52:54",
+              "trips_remaining": 22,
+              "route_id": "623",
+              "route_name": "605UP",
+              "from_stop_id": "338",
+              "to_stop_id": "3004"
+            }
+          ],
+          "total_duration_min": 84.2,
+          "quiet_hour_duration_min": 63.3,
+          "traffic_delay_min": 20.9,
+          "transfers": 1,
+          "access_walk_min": 0.0,
+          "waiting_time_min": 19.0,
+          "bus_travel_time_min": 64.6,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.6,
+          "routes_used": [
+            "119",
+            "623"
+          ],
+          "route_names": [
+            "135DOWN",
+            "605UP"
+          ],
+          "estimated_arrival": "2026-10-27T09:54:12.744339+05:30"
+        },
+        "tuesday_2300": {
+          "status": "UNAVAILABLE",
+          "passenger_journey_feasible": false,
+          "duration_estimate_type": "HYPOTHETICAL_SERVICE_ENDED",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T23:00:00+05:30",
+          "route_level_scheduled_active": false,
+          "od_level_timetable_confirmed": false,
+          "service_notes": "OD timetable check failed: ['SERVICE_ENDED_EARLIER (Last departure: 20:04:26)', 'SERVICE_ENDED_EARLIER (Last departure: 22:59:11)']",
+          "leg_od_timetable_details": [
+            {
+              "available": false,
+              "reason": "SERVICE_ENDED_EARLIER (Last departure: 20:04:26)",
+              "route_id": "1680",
+              "route_name": "19ADOWN",
+              "from_stop_id": "7594",
+              "to_stop_id": "367"
+            },
+            {
+              "available": false,
+              "reason": "SERVICE_ENDED_EARLIER (Last departure: 22:59:11)",
+              "route_id": "2000",
+              "route_name": "505UP",
+              "from_stop_id": "367",
+              "to_stop_id": "3004"
+            }
+          ],
+          "total_duration_min": 74.4,
+          "quiet_hour_duration_min": 67.0,
+          "traffic_delay_min": 7.4,
+          "transfers": 1,
+          "access_walk_min": 0.0,
+          "waiting_time_min": 27.0,
+          "bus_travel_time_min": 46.8,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.6,
+          "routes_used": [
+            "1680",
+            "2000"
+          ],
+          "route_names": [
+            "19ADOWN",
+            "505UP"
+          ],
+          "estimated_arrival": "2026-10-28T00:14:23.344340+05:30"
+        }
+      }
+    },
+    {
+      "od_id": 10,
+      "corridor_description": "Pocket 5 Mayur Vihar -> Old Delhi Railway Station (T)",
+      "origin": {
+        "stop_id": "805",
+        "stop_name": "Pocket5 Mayur Vihar Ph1 /  Pocket 5 Khichri Pur",
+        "lat": 28.6132,
+        "lon": 77.2955
+      },
+      "destination": {
+        "stop_id": "7572",
+        "stop_name": "Old Delhi Railway Station (T)",
+        "lat": 28.660051,
+        "lon": 77.227892
+      },
+      "scenarios": {
+        "tuesday_0830": {
+          "status": "CONFIRMED",
+          "passenger_journey_feasible": true,
+          "duration_estimate_type": "VALIDATED_FEASIBLE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T08:30:00+05:30",
+          "route_level_scheduled_active": false,
+          "od_level_timetable_confirmed": true,
+          "service_notes": "All route legs confirmed active with departures after requested time.",
+          "leg_od_timetable_details": [
+            {
+              "available": true,
+              "next_departure": "08:38:12",
+              "trips_remaining": 99,
+              "route_id": "1551",
+              "route_name": "118EXTDOWN",
+              "from_stop_id": "805",
+              "to_stop_id": "2022"
+            },
+            {
+              "available": true,
+              "next_departure": "11:27:09",
+              "trips_remaining": 3,
+              "route_id": "2834",
+              "route_name": "404DOWN",
+              "from_stop_id": "2022",
+              "to_stop_id": "7572"
+            }
+          ],
+          "total_duration_min": 48.7,
+          "quiet_hour_duration_min": 40.0,
+          "traffic_delay_min": 8.7,
+          "transfers": 1,
+          "access_walk_min": 0.0,
+          "waiting_time_min": 19.0,
+          "bus_travel_time_min": 29.7,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.0,
+          "routes_used": [
+            "1551",
+            "2834"
+          ],
+          "route_names": [
+            "118EXTDOWN",
+            "404DOWN"
+          ],
+          "estimated_arrival": "2026-10-27T09:18:39.700000+05:30"
+        },
+        "tuesday_2300": {
+          "status": "UNAVAILABLE",
+          "passenger_journey_feasible": false,
+          "duration_estimate_type": "HYPOTHETICAL_SERVICE_ENDED",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T23:00:00+05:30",
+          "route_level_scheduled_active": false,
+          "od_level_timetable_confirmed": false,
+          "service_notes": "OD timetable check failed: ['SERVICE_ENDED_EARLIER (Last departure: 21:21:12)']",
+          "leg_od_timetable_details": [
+            {
+              "available": false,
+              "reason": "SERVICE_ENDED_EARLIER (Last departure: 21:21:12)",
+              "route_id": "1551",
+              "route_name": "118EXTDOWN",
+              "from_stop_id": "805",
+              "to_stop_id": "271"
+            }
+          ],
+          "total_duration_min": 47.5,
+          "quiet_hour_duration_min": 44.4,
+          "traffic_delay_min": 3.1,
+          "transfers": 0,
+          "access_walk_min": 0.0,
+          "waiting_time_min": 13.5,
+          "bus_travel_time_min": 23.2,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 10.8,
+          "routes_used": [
+            "1551"
+          ],
+          "route_names": [
+            "118EXTDOWN"
+          ],
+          "estimated_arrival": "2026-10-27T23:47:31.812681+05:30"
+        }
+      }
+    },
+    {
+      "od_id": 11,
+      "corridor_description": "Dwarka Sec-10 Metro -> Central Secretariat",
+      "origin": {
+        "stop_id": "3860",
+        "stop_name": "District Court / Indira Gandhi Hospital/ NHAI Building / Dwarka Sec-10 Metro Station",
+        "lat": 28.578409,
+        "lon": 77.058932
+      },
+      "destination": {
+        "stop_id": "1334",
+        "stop_name": "Krishi Bhawan  /  Rail Bhawan Metro Station /  Central Secretariat Metro Station",
+        "lat": 28.61502913728777,
+        "lon": 77.2122761530105
+      },
+      "scenarios": {
+        "tuesday_0830": {
+          "status": "SPECIAL_SERVICE",
+          "passenger_journey_feasible": false,
+          "duration_estimate_type": "HYPOTHETICAL_SPECIAL_SERVICE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T08:30:00+05:30",
+          "route_level_scheduled_active": true,
+          "od_level_timetable_confirmed": false,
+          "service_notes": "OD timetable check failed: ['SERVICE_ENDED_EARLIER (Last departure: 08:10:18)']",
+          "leg_od_timetable_details": [
+            {
+              "available": false,
+              "reason": "SERVICE_ENDED_EARLIER (Last departure: 08:10:18)",
+              "route_id": "3317",
+              "route_name": "DS-3DOWN",
+              "from_stop_id": "3846",
+              "to_stop_id": "9912"
+            }
+          ],
+          "total_duration_min": 63.5,
+          "quiet_hour_duration_min": 45.8,
+          "traffic_delay_min": 17.7,
+          "transfers": 0,
+          "access_walk_min": 1.3,
+          "waiting_time_min": 9.5,
+          "bus_travel_time_min": 46.8,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 5.9,
+          "routes_used": [
+            "3317"
+          ],
+          "route_names": [
+            "DS-3DOWN"
+          ],
+          "estimated_arrival": "2026-10-27T09:33:32.555735+05:30"
+        },
+        "tuesday_2300": {
+          "status": "SPECIAL_SERVICE",
+          "passenger_journey_feasible": false,
+          "duration_estimate_type": "HYPOTHETICAL_SPECIAL_SERVICE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T23:00:00+05:30",
+          "route_level_scheduled_active": false,
+          "od_level_timetable_confirmed": false,
+          "service_notes": "OD timetable check failed: ['SERVICE_ENDED_EARLIER (Last departure: 08:10:18)']",
+          "leg_od_timetable_details": [
+            {
+              "available": false,
+              "reason": "SERVICE_ENDED_EARLIER (Last departure: 08:10:18)",
+              "route_id": "3317",
+              "route_name": "DS-3DOWN",
+              "from_stop_id": "3846",
+              "to_stop_id": "9912"
+            }
+          ],
+          "total_duration_min": 56.4,
+          "quiet_hour_duration_min": 49.8,
+          "traffic_delay_min": 6.6,
+          "transfers": 0,
+          "access_walk_min": 1.3,
+          "waiting_time_min": 13.5,
+          "bus_travel_time_min": 35.7,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 5.9,
+          "routes_used": [
+            "3317"
+          ],
+          "route_names": [
+            "DS-3DOWN"
+          ],
+          "estimated_arrival": "2026-10-27T23:56:23.655735+05:30"
+        }
+      }
+    },
+    {
+      "od_id": 12,
+      "corridor_description": "Punjabi Bagh Terminal -> Lajpat Nagar Crossing",
+      "origin": {
+        "stop_id": "1234",
+        "stop_name": "Punjabi Bagh / punjabi bagh terminal",
+        "lat": 28.67548133204641,
+        "lon": 77.1404635907311
+      },
+      "destination": {
+        "stop_id": "2282",
+        "stop_name": "Lajpat Nagar Crossing",
+        "lat": 28.564183,
+        "lon": 77.250367
+      },
+      "scenarios": {
+        "tuesday_0830": {
+          "status": "CONFIRMED",
+          "passenger_journey_feasible": true,
+          "duration_estimate_type": "VALIDATED_FEASIBLE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T08:30:00+05:30",
+          "route_level_scheduled_active": true,
+          "od_level_timetable_confirmed": true,
+          "service_notes": "All route legs confirmed active with departures after requested time.",
+          "leg_od_timetable_details": [
+            {
+              "available": true,
+              "next_departure": "08:30:00",
+              "trips_remaining": 41,
+              "route_id": "1980",
+              "route_name": "479UP",
+              "from_stop_id": "1277",
+              "to_stop_id": "2321"
+            }
+          ],
+          "total_duration_min": 74.1,
+          "quiet_hour_duration_min": 58.3,
+          "traffic_delay_min": 15.8,
+          "transfers": 0,
+          "access_walk_min": 1.1,
+          "waiting_time_min": 9.5,
+          "bus_travel_time_min": 56.0,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 7.5,
+          "routes_used": [
+            "1980"
+          ],
+          "route_names": [
+            "479UP"
+          ],
+          "estimated_arrival": "2026-10-27T09:44:05.132001+05:30"
+        },
+        "tuesday_2300": {
+          "status": "UNAVAILABLE",
+          "passenger_journey_feasible": false,
+          "duration_estimate_type": "HYPOTHETICAL_SERVICE_ENDED",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T23:00:00+05:30",
+          "route_level_scheduled_active": false,
+          "od_level_timetable_confirmed": false,
+          "service_notes": "OD timetable check failed: ['SERVICE_ENDED_EARLIER (Last departure: 20:30:00)']",
+          "leg_od_timetable_details": [
+            {
+              "available": false,
+              "reason": "SERVICE_ENDED_EARLIER (Last departure: 20:30:00)",
+              "route_id": "1980",
+              "route_name": "479UP",
+              "from_stop_id": "1277",
+              "to_stop_id": "2321"
+            }
+          ],
+          "total_duration_min": 65.8,
+          "quiet_hour_duration_min": 61.8,
+          "traffic_delay_min": 4.0,
+          "transfers": 0,
+          "access_walk_min": 1.1,
+          "waiting_time_min": 13.5,
+          "bus_travel_time_min": 43.6,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 7.5,
+          "routes_used": [
+            "1980"
+          ],
+          "route_names": [
+            "479UP"
+          ],
+          "estimated_arrival": "2026-10-28T00:05:45.932001+05:30"
+        }
+      }
+    },
+    {
+      "od_id": 13,
+      "corridor_description": "Narela Terminal -> Old Delhi Railway Station (T)",
+      "origin": {
+        "stop_id": "319",
+        "stop_name": "Narela Terminal",
+        "lat": 28.85184754676453,
+        "lon": 77.08803408455098
+      },
+      "destination": {
+        "stop_id": "7572",
+        "stop_name": "Old Delhi Railway Station (T)",
+        "lat": 28.660051,
+        "lon": 77.227892
+      },
+      "scenarios": {
+        "tuesday_0830": {
+          "status": "SPECIAL_SERVICE",
+          "passenger_journey_feasible": false,
+          "duration_estimate_type": "HYPOTHETICAL_SPECIAL_SERVICE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T08:30:00+05:30",
+          "route_level_scheduled_active": false,
+          "od_level_timetable_confirmed": false,
+          "service_notes": "OD timetable check failed: ['SERVICE_ENDED_EARLIER (Last departure: 04:00:00)']",
+          "leg_od_timetable_details": [
+            {
+              "available": false,
+              "reason": "SERVICE_ENDED_EARLIER (Last departure: 04:00:00)",
+              "route_id": "3647",
+              "route_name": "0131(NS)DOWN",
+              "from_stop_id": "6775",
+              "to_stop_id": "314"
+            },
+            {
+              "available": true,
+              "next_departure": "08:38:11",
+              "trips_remaining": 104,
+              "route_id": "1507",
+              "route_name": "103DOWN",
+              "from_stop_id": "5450",
+              "to_stop_id": "7596"
+            }
+          ],
+          "total_duration_min": 95.4,
+          "quiet_hour_duration_min": 73.9,
+          "traffic_delay_min": 21.5,
+          "transfers": 1,
+          "access_walk_min": 0.8,
+          "waiting_time_min": 19.0,
+          "bus_travel_time_min": 72.2,
+          "transfer_walk_min": 2.5,
+          "egress_walk_min": 0.9,
+          "routes_used": [
+            "3647",
+            "1507"
+          ],
+          "route_names": [
+            "0131(NS)DOWN",
+            "103DOWN"
+          ],
+          "estimated_arrival": "2026-10-27T10:05:23.320583+05:30"
+        },
+        "tuesday_2300": {
+          "status": "UNAVAILABLE",
+          "passenger_journey_feasible": false,
+          "duration_estimate_type": "HYPOTHETICAL_SERVICE_ENDED",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T23:00:00+05:30",
+          "route_level_scheduled_active": false,
+          "od_level_timetable_confirmed": false,
+          "service_notes": "OD timetable check failed: ['SERVICE_ENDED_EARLIER (Last departure: 18:37:43)']",
+          "leg_od_timetable_details": [
+            {
+              "available": false,
+              "reason": "SERVICE_ENDED_EARLIER (Last departure: 18:37:43)",
+              "route_id": "1646",
+              "route_name": "175DOWN",
+              "from_stop_id": "5372",
+              "to_stop_id": "7572"
+            }
+          ],
+          "total_duration_min": 79.5,
+          "quiet_hour_duration_min": 71.5,
+          "traffic_delay_min": 8.0,
+          "transfers": 0,
+          "access_walk_min": 6.5,
+          "waiting_time_min": 13.5,
+          "bus_travel_time_min": 59.5,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.0,
+          "routes_used": [
+            "1646"
+          ],
+          "route_names": [
+            "175DOWN"
+          ],
+          "estimated_arrival": "2026-10-28T00:19:28.494001+05:30"
+        }
+      }
+    },
+    {
+      "od_id": 14,
+      "corridor_description": "Shahdara (Shyam Lal College) -> Karol Bagh Terminal",
+      "origin": {
+        "stop_id": "7696",
+        "stop_name": "Shahdara (Shyam Lal College)",
+        "lat": 28.67367126722037,
+        "lon": 77.28359073400499
+      },
+      "destination": {
+        "stop_id": "1325",
+        "stop_name": "Karol Bagh Terminal",
+        "lat": 28.648374,
+        "lon": 77.200656
+      },
+      "scenarios": {
+        "tuesday_0830": {
+          "status": "CONFIRMED",
+          "passenger_journey_feasible": true,
+          "duration_estimate_type": "VALIDATED_FEASIBLE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T08:30:00+05:30",
+          "route_level_scheduled_active": true,
+          "od_level_timetable_confirmed": true,
+          "service_notes": "All route legs confirmed active with departures after requested time.",
+          "leg_od_timetable_details": [
+            {
+              "available": true,
+              "next_departure": "08:34:37",
+              "trips_remaining": 17,
+              "route_id": "1699",
+              "route_name": "208UP",
+              "from_stop_id": "7703",
+              "to_stop_id": "1784"
+            }
+          ],
+          "total_duration_min": 47.5,
+          "quiet_hour_duration_min": 30.8,
+          "traffic_delay_min": 16.7,
+          "transfers": 0,
+          "access_walk_min": 1.9,
+          "waiting_time_min": 9.5,
+          "bus_travel_time_min": 34.0,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 2.2,
+          "routes_used": [
+            "1699"
+          ],
+          "route_names": [
+            "208UP"
+          ],
+          "estimated_arrival": "2026-10-27T09:17:31.013439+05:30"
+        },
+        "tuesday_2300": {
+          "status": "UNAVAILABLE",
+          "passenger_journey_feasible": false,
+          "duration_estimate_type": "HYPOTHETICAL_SERVICE_ENDED",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T23:00:00+05:30",
+          "route_level_scheduled_active": false,
+          "od_level_timetable_confirmed": false,
+          "service_notes": "OD timetable check failed: ['SERVICE_ENDED_EARLIER (Last departure: 21:34:37)']",
+          "leg_od_timetable_details": [
+            {
+              "available": false,
+              "reason": "SERVICE_ENDED_EARLIER (Last departure: 21:34:37)",
+              "route_id": "1699",
+              "route_name": "208UP",
+              "from_stop_id": "7703",
+              "to_stop_id": "1784"
+            }
+          ],
+          "total_duration_min": 40.8,
+          "quiet_hour_duration_min": 34.8,
+          "traffic_delay_min": 6.0,
+          "transfers": 0,
+          "access_walk_min": 1.9,
+          "waiting_time_min": 13.5,
+          "bus_travel_time_min": 23.2,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 2.2,
+          "routes_used": [
+            "1699"
+          ],
+          "route_names": [
+            "208UP"
+          ],
+          "estimated_arrival": "2026-10-27T23:40:45.313439+05:30"
+        }
+      }
+    },
+    {
+      "od_id": 15,
+      "corridor_description": "Badarpur Border (T) -> Kashmere Gate ISBT",
+      "origin": {
+        "stop_id": "2640",
+        "stop_name": "Badarpur Border (T)",
+        "lat": 28.49313011545189,
+        "lon": 77.30372712033363
+      },
+      "destination": {
+        "stop_id": "7571",
+        "stop_name": "GGS University ISBT Kashmere Gate",
+        "lat": 28.66547562688361,
+        "lon": 77.2301732003689
+      },
+      "scenarios": {
+        "tuesday_0830": {
+          "status": "CONFIRMED",
+          "passenger_journey_feasible": true,
+          "duration_estimate_type": "VALIDATED_FEASIBLE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T08:30:00+05:30",
+          "route_level_scheduled_active": true,
+          "od_level_timetable_confirmed": true,
+          "service_notes": "All route legs confirmed active with departures after requested time.",
+          "leg_od_timetable_details": [
+            {
+              "available": true,
+              "next_departure": "08:30:00",
+              "trips_remaining": 67,
+              "route_id": "1899",
+              "route_name": "405DOWN",
+              "from_stop_id": "2640",
+              "to_stop_id": "271"
+            }
+          ],
+          "total_duration_min": 73.2,
+          "quiet_hour_duration_min": 52.5,
+          "traffic_delay_min": 20.7,
+          "transfers": 0,
+          "access_walk_min": 0.0,
+          "waiting_time_min": 9.5,
+          "bus_travel_time_min": 63.3,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.4,
+          "routes_used": [
+            "1899"
+          ],
+          "route_names": [
+            "405DOWN"
+          ],
+          "estimated_arrival": "2026-10-27T09:43:13.211304+05:30"
+        },
+        "tuesday_2300": {
+          "status": "CONFIRMED",
+          "passenger_journey_feasible": true,
+          "duration_estimate_type": "FEASIBLE_NIGHT_SERVICE",
+          "telemetry_mode": "HISTORICAL_ONLY_EVALUATION",
+          "departure_time": "2026-10-27T23:00:00+05:30",
+          "route_level_scheduled_active": true,
+          "od_level_timetable_confirmed": true,
+          "service_notes": "All route legs confirmed active with departures after requested time.",
+          "leg_od_timetable_details": [
+            {
+              "available": true,
+              "next_departure": "23:40:00",
+              "trips_remaining": 1,
+              "route_id": "1899",
+              "route_name": "405DOWN",
+              "from_stop_id": "2640",
+              "to_stop_id": "271"
+            }
+          ],
+          "total_duration_min": 59.2,
+          "quiet_hour_duration_min": 56.4,
+          "traffic_delay_min": 2.8,
+          "transfers": 0,
+          "access_walk_min": 0.0,
+          "waiting_time_min": 13.5,
+          "bus_travel_time_min": 45.3,
+          "transfer_walk_min": 0.0,
+          "egress_walk_min": 0.4,
+          "routes_used": [
+            "1899"
+          ],
+          "route_names": [
+            "405DOWN"
+          ],
+          "estimated_arrival": "2026-10-27T23:59:12.411304+05:30"
+        }
+      }
+    }
+  ],
+  "unresolved_data_limitations": [
+    "Static GTFS stop_times specify scheduled arrivals, but intermediate dwell is not disaggregated from running time in vehicle position updates.",
+    "GTFS-RT vehicle telemetry lacks passenger load metrics (crowding/occupancy), preventing passenger discomfort or boarding denial modeling.",
+    "Footpath transfers use Euclidean distance with a 1.25 Manhattan detour factor at 1.2 m/s; grade-separated skywalks or pedestrian subways are not geometrically modeled.",
+    "Late-night routing availability reflects GTFS timetable schedules; real-world ad-hoc cancellations or unscheduled night trips are unobserved without live RT."
+  ]
+}

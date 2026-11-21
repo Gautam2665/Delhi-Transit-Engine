@@ -1,0 +1,402 @@
+{
+  "geometry": {
+    "total_segments": 106160,
+    "total_shapes": 3496,
+    "snap_percentiles": {
+      "p50": 2.3,
+      "p75": 5.3,
+      "p90": 9.0,
+      "p95": 11.8,
+      "p99": 24.0,
+      "p100": 131.8
+    },
+    "inter_stop_discontinuities": 0,
+    "max_inter_stop_gap_m": 0.0,
+    "coincident_stops_count": 276,
+    "expanded_segments_count": 60,
+    "flagged_35km_boundary": 0,
+    "expanded_length_stats": {
+      "min": 15142.33,
+      "mean": 20594.46,
+      "median": 20124.78,
+      "max": 33105.64
+    },
+    "expanded_speed_stats": {
+      "min": 18.8,
+      "mean": 22.53,
+      "median": 22.67,
+      "max": 27.58
+    },
+    "kg_sb": [
+      {
+        "segment_id": "shp_3_1222:0",
+        "shape_id": "shp_3_1222",
+        "seq": 0,
+        "from_stop_id": "4822",
+        "to_stop_id": "1010",
+        "start_m": 0.0,
+        "end_m": 26147.01,
+        "length_m": 26147.01,
+        "window_expanded": true,
+        "hit_exp_boundary": false,
+        "snap_err_from_m": 0.3,
+        "snap_err_to_m": 12.3,
+        "sched_sec": 4681.0,
+        "trip_support": 6
+      },
+      {
+        "segment_id": "shp_3_1228:0",
+        "shape_id": "shp_3_1228",
+        "seq": 0,
+        "from_stop_id": "4822",
+        "to_stop_id": "1010",
+        "start_m": 0.0,
+        "end_m": 26147.01,
+        "length_m": 26147.01,
+        "window_expanded": true,
+        "hit_exp_boundary": false,
+        "snap_err_from_m": 0.3,
+        "snap_err_to_m": 12.3,
+        "sched_sec": 4681.0,
+        "trip_support": 10
+      }
+    ],
+    "loop_1203": {
+      "segments": 182,
+      "expanded": false,
+      "min_len": 112.48,
+      "median_len": 476.56,
+      "max_len": 1620.72
+    }
+  },
+  "day1_rejections": {
+    "hourly": {
+      "0": {
+        "DT_TOO_SMALL": 99,
+        "NON_POSITIVE_DISTANCE": 3,
+        "PING_GAP_TOO_LARGE": 618,
+        "SPEED_TOO_HIGH": 118,
+        "SPEED_TOO_LOW": 16
+      },
+      "1": {
+        "DT_TOO_SMALL": 12,
+        "NON_POSITIVE_DISTANCE": 1,
+        "PING_GAP_TOO_LARGE": 202,
+        "SPEED_TOO_HIGH": 85,
+        "SPEED_TOO_LOW": 7
+      },
+      "2": {
+        "DT_TOO_SMALL": 12,
+        "NON_POSITIVE_DISTANCE": 1,
+        "PING_GAP_TOO_LARGE": 185,
+        "SPEED_TOO_HIGH": 67,
+        "SPEED_TOO_LOW": 8
+      },
+      "3": {
+        "DT_TOO_SMALL": 25,
+        "NON_POSITIVE_DISTANCE": 0,
+        "PING_GAP_TOO_LARGE": 177,
+        "SPEED_TOO_HIGH": 74,
+        "SPEED_TOO_LOW": 8
+      },
+      "4": {
+        "DT_TOO_SMALL": 112,
+        "NON_POSITIVE_DISTANCE": 8,
+        "PING_GAP_TOO_LARGE": 584,
+        "SPEED_TOO_HIGH": 77,
+        "SPEED_TOO_LOW": 10
+      },
+      "5": {
+        "DT_TOO_SMALL": 547,
+        "NON_POSITIVE_DISTANCE": 44,
+        "PING_GAP_TOO_LARGE": 3126,
+        "SPEED_TOO_HIGH": 437,
+        "SPEED_TOO_LOW": 68
+      },
+      "6": {
+        "DT_TOO_SMALL": 508,
+        "NON_POSITIVE_DISTANCE": 109,
+        "PING_GAP_TOO_LARGE": 7363,
+        "SPEED_TOO_HIGH": 967,
+        "SPEED_TOO_LOW": 233
+      },
+      "7": {
+        "DT_TOO_SMALL": 1117,
+        "NON_POSITIVE_DISTANCE": 128,
+        "PING_GAP_TOO_LARGE": 10660,
+        "SPEED_TOO_HIGH": 1492,
+        "SPEED_TOO_LOW": 292
+      },
+      "8": {
+        "DT_TOO_SMALL": 1436,
+        "NON_POSITIVE_DISTANCE": 167,
+        "PING_GAP_TOO_LARGE": 14356,
+        "SPEED_TOO_HIGH": 1866,
+        "SPEED_TOO_LOW": 339
+      },
+      "9": {
+        "DT_TOO_SMALL": 932,
+        "NON_POSITIVE_DISTANCE": 146,
+        "PING_GAP_TOO_LARGE": 15900,
+        "SPEED_TOO_HIGH": 1824,
+        "SPEED_TOO_LOW": 584
+      },
+      "10": {
+        "DT_TOO_SMALL": 1121,
+        "NON_POSITIVE_DISTANCE": 165,
+        "PING_GAP_TOO_LARGE": 14889,
+        "SPEED_TOO_HIGH": 1746,
+        "SPEED_TOO_LOW": 561
+      },
+      "11": {
+        "DT_TOO_SMALL": 1694,
+        "NON_POSITIVE_DISTANCE": 162,
+        "PING_GAP_TOO_LARGE": 14352,
+        "SPEED_TOO_HIGH": 2004,
+        "SPEED_TOO_LOW": 462
+      },
+      "12": {
+        "DT_TOO_SMALL": 987,
+        "NON_POSITIVE_DISTANCE": 121,
+        "PING_GAP_TOO_LARGE": 12453,
+        "SPEED_TOO_HIGH": 1402,
+        "SPEED_TOO_LOW": 418
+      },
+      "13": {
+        "DT_TOO_SMALL": 718,
+        "NON_POSITIVE_DISTANCE": 91,
+        "PING_GAP_TOO_LARGE": 10601,
+        "SPEED_TOO_HIGH": 1320,
+        "SPEED_TOO_LOW": 357
+      },
+      "14": {
+        "DT_TOO_SMALL": 623,
+        "NON_POSITIVE_DISTANCE": 84,
+        "PING_GAP_TOO_LARGE": 9732,
+        "SPEED_TOO_HIGH": 1097,
+        "SPEED_TOO_LOW": 289
+      },
+      "15": {
+        "DT_TOO_SMALL": 1086,
+        "NON_POSITIVE_DISTANCE": 89,
+        "PING_GAP_TOO_LARGE": 9624,
+        "SPEED_TOO_HIGH": 988,
+        "SPEED_TOO_LOW": 375
+      },
+      "16": {
+        "DT_TOO_SMALL": 608,
+        "NON_POSITIVE_DISTANCE": 104,
+        "PING_GAP_TOO_LARGE": 11679,
+        "SPEED_TOO_HIGH": 1259,
+        "SPEED_TOO_LOW": 410
+      },
+      "17": {
+        "DT_TOO_SMALL": 1173,
+        "NON_POSITIVE_DISTANCE": 115,
+        "PING_GAP_TOO_LARGE": 14127,
+        "SPEED_TOO_HIGH": 1074,
+        "SPEED_TOO_LOW": 559
+      },
+      "18": {
+        "DT_TOO_SMALL": 818,
+        "NON_POSITIVE_DISTANCE": 113,
+        "PING_GAP_TOO_LARGE": 18341,
+        "SPEED_TOO_HIGH": 1176,
+        "SPEED_TOO_LOW": 941
+      },
+      "19": {
+        "DT_TOO_SMALL": 766,
+        "NON_POSITIVE_DISTANCE": 85,
+        "PING_GAP_TOO_LARGE": 17959,
+        "SPEED_TOO_HIGH": 1076,
+        "SPEED_TOO_LOW": 1173
+      },
+      "20": {
+        "DT_TOO_SMALL": 712,
+        "NON_POSITIVE_DISTANCE": 103,
+        "PING_GAP_TOO_LARGE": 15500,
+        "SPEED_TOO_HIGH": 1148,
+        "SPEED_TOO_LOW": 1167
+      },
+      "21": {
+        "DT_TOO_SMALL": 584,
+        "NON_POSITIVE_DISTANCE": 91,
+        "PING_GAP_TOO_LARGE": 13279,
+        "SPEED_TOO_HIGH": 1252,
+        "SPEED_TOO_LOW": 625
+      },
+      "22": {
+        "DT_TOO_SMALL": 593,
+        "NON_POSITIVE_DISTANCE": 61,
+        "PING_GAP_TOO_LARGE": 8457,
+        "SPEED_TOO_HIGH": 898,
+        "SPEED_TOO_LOW": 317
+      },
+      "23": {
+        "DT_TOO_SMALL": 221,
+        "NON_POSITIVE_DISTANCE": 17,
+        "PING_GAP_TOO_LARGE": 3788,
+        "SPEED_TOO_HIGH": 547,
+        "SPEED_TOO_LOW": 142
+      }
+    },
+    "top_routes": {
+      "2716": 1510,
+      "2229": 1463,
+      "1978": 1348,
+      "2232": 1327,
+      "3476": 1324,
+      "2161": 1289,
+      "3475": 1285,
+      "1515": 1282,
+      "2544": 1227,
+      "1977": 1202
+    }
+  },
+  "phase2_days": {
+    "Weekday": {
+      "day_stem": "bus_movements_2026_10_01",
+      "dow_name": "Thursday",
+      "valid_count": 1188882,
+      "rejected_count": 279819,
+      "pass_rate_pct": 80.95,
+      "unique_segments": 66796,
+      "unique_routes": 2003,
+      "hourly_obs": {
+        "0": 3969,
+        "1": 1429,
+        "2": 1225,
+        "3": 1306,
+        "4": 3800,
+        "5": 27643,
+        "6": 59221,
+        "7": 84774,
+        "8": 96624,
+        "9": 91474,
+        "10": 92285,
+        "11": 90351,
+        "12": 74532,
+        "13": 55408,
+        "14": 49179,
+        "15": 52020,
+        "16": 61644,
+        "17": 67025,
+        "18": 54625,
+        "19": 51049,
+        "20": 53153,
+        "21": 53345,
+        "22": 42528,
+        "23": 20273
+      },
+      "reject_breakdown": {
+        "PING_GAP_TOO_LARGE": 227952,
+        "SPEED_TOO_HIGH": 23994,
+        "DT_TOO_SMALL": 16504,
+        "SPEED_TOO_LOW": 9361,
+        "NON_POSITIVE_DISTANCE": 2008
+      }
+    },
+    "Saturday": {
+      "day_stem": "bus_movements_2026_10_03",
+      "dow_name": "Saturday",
+      "valid_count": 1251156,
+      "rejected_count": 265678,
+      "pass_rate_pct": 82.48,
+      "unique_segments": 66339,
+      "unique_routes": 1961,
+      "hourly_obs": {
+        "0": 2900,
+        "1": 1293,
+        "2": 1122,
+        "3": 1053,
+        "4": 3956,
+        "5": 27036,
+        "6": 60020,
+        "7": 89335,
+        "8": 103940,
+        "9": 100891,
+        "10": 98888,
+        "11": 90448,
+        "12": 73021,
+        "13": 53555,
+        "14": 50334,
+        "15": 51912,
+        "16": 62202,
+        "17": 69533,
+        "18": 64549,
+        "19": 63646,
+        "20": 65171,
+        "21": 57935,
+        "22": 40791,
+        "23": 17625
+      },
+      "reject_breakdown": {
+        "PING_GAP_TOO_LARGE": 209116,
+        "SPEED_TOO_HIGH": 26510,
+        "DT_TOO_SMALL": 17634,
+        "SPEED_TOO_LOW": 10310,
+        "NON_POSITIVE_DISTANCE": 2108
+      }
+    },
+    "Sunday": {
+      "day_stem": "bus_movements_2026_10_04",
+      "dow_name": "Sunday",
+      "valid_count": 1342568,
+      "rejected_count": 243310,
+      "pass_rate_pct": 84.66,
+      "unique_segments": 64273,
+      "unique_routes": 1878,
+      "hourly_obs": {
+        "0": 4598,
+        "1": 2029,
+        "2": 1400,
+        "3": 1330,
+        "4": 3746,
+        "5": 24972,
+        "6": 56919,
+        "7": 85658,
+        "8": 98547,
+        "9": 102142,
+        "10": 97146,
+        "11": 96297,
+        "12": 79413,
+        "13": 60721,
+        "14": 56282,
+        "15": 61942,
+        "16": 76710,
+        "17": 83562,
+        "18": 77276,
+        "19": 77861,
+        "20": 75399,
+        "21": 62116,
+        "22": 40829,
+        "23": 15673
+      },
+      "reject_breakdown": {
+        "PING_GAP_TOO_LARGE": 189906,
+        "SPEED_TOO_HIGH": 28061,
+        "DT_TOO_SMALL": 17638,
+        "SPEED_TOO_LOW": 5528,
+        "NON_POSITIVE_DISTANCE": 2177
+      }
+    }
+  },
+  "validation_day": {
+    "day_stem": "bus_movements_2026_10_29",
+    "dow_name": "Thursday (Held-Out Out-of-Sample)",
+    "valid_count": 1147748,
+    "rejected_count": 264825,
+    "pass_rate_pct": 81.25,
+    "unique_segments": 66097,
+    "unique_routes": 2023
+  },
+  "fallback_tier_simulation": {
+    "total_training_obs": 3782606,
+    "tier1_slots_n_ge_3": 488042,
+    "tier1_slots_n_ge_1": 1208069,
+    "total_theoretical_slots": 5095680,
+    "active_transit_slots": 3609440,
+    "unique_segments_covered_in_training": 69848,
+    "pct_all_segments_covered": 65.8
+  }
+}
