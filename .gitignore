@@ -48,5 +48,6 @@ Thumbs.db
 
 # Temporary / Scratch investigation scripts
 scratch_*.py
+data/raw_rt/
 inspect_db.py
 

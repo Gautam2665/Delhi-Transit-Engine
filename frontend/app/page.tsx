@@ -260,6 +260,12 @@ export default function DelhiTransitInspector() {
       pitch: 20,
     });
 
+    map.setMissingStyleImageResolver((id) => {
+      if (!map.hasImage(id)) {
+        map.addImage(id, { width: 1, height: 1, data: new Uint8Array(4) });
+      }
+    });
+
     map.on("styleimagemissing", (e) => {
       const id = e.id;
       if (!map.hasImage(id)) {

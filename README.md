@@ -6,7 +6,7 @@
 
 ## 1. System Overview
 
-The **Delhi Transit Engine** is an open-source, production-grade transit engine designed for the Delhi National Capital Territory (NCT). It combines static General Transit Feed Specification (GTFS) schedules with massive historical GPS bus movement telemetry and real-time streaming GTFS-RT Protobuf feeds to provide:
+**Delhi Transit Engine** is an open-source working prototype of a data-driven transit engine designed for Delhi's bus network (DTC / DIMTS). It combines static General Transit Feed Specification (GTFS) schedules with historical GPS bus movement telemetry and streaming GTFS-RT Protobuf feeds to provide:
 
 1. **High-Resolution Segment Speed Profiles:** 106,160 directional road segments calibrated across 5,095,680 time-of-day slots, reducing segment travel time prediction error by **30.74% MAE** and **21.25% RMSE** over static GTFS timetables.
 2. **Streaming GTFS-RT Live Estimation Pipeline (v3.1):** Deterministic spatial map-matching (M01–M13), 16-state kinematic transition verification (K01–K16), boundary-crossing segment accumulation, signal-wait delay isolation, and robust weighted-median live speed estimation.
@@ -101,9 +101,13 @@ Uvicorn running on http://127.0.0.1:8000
 ```powershell
 # In a separate terminal
 cd frontend
+# Development mode:
 npm run dev
+
+# Or Production mode:
+npm run build; npx next start -p 3001
 ```
-Open **`http://localhost:3000`** in any web browser.
+Open **`http://localhost:3000`** (dev) or **`http://localhost:3001`** (production) in any web browser.
 
 ### Step 3: Run Full Automated Verification Suites
 ```powershell
@@ -127,10 +131,134 @@ python tests/test_backend_api.py
 | **`/health`** | `GET` | None | Returns overall system health and presence of historical speed tensors. |
 | **`/api/telemetry/health`** | `GET` | None | Emits `TelemetryHealthMetrics`: raw entities, corrupt GPS count (0), outside-study-area count (32), valid dedup count (5,961), matching outcome counts, kinematic breakdown, and archive health. |
 | **`/api/telemetry/snapshot`** | `GET` | None | Returns real-time fleet snapshot: active segment buffer count, live vehicles tracked, and polling state. |
-| **`/api/telemetry/coverage`** | `GET` | None | Reports canonical network coverage percentage ($N_{\text{seg\_fresh}} / 106,160$). |
+| **`/api/telemetry/coverage`** | `GET` | None | Reports canonical network coverage percentage ($N_{\text{fresh}} / 106{,}160$). |
 | **`/vehicles/live`** | `GET` | `route_id` (optional), `limit` (default 500) | GeoJSON-ready live vehicle positions with along-track progress and snapped coordinates. |
 | **`/journeys`** | `GET` | `from` (string), `to` (string), `depart` (ISO-8601), `k` (int, 1-5) | Multi-modal transit journey planning evaluating walking, expected waiting time, and live-blended bus travel time. |
 | **`/journeys/shape`** | `GET` | `segment_ids` (comma-separated) | Slices high-resolution UTM route shape and returns WGS-84 GeoJSON `LineString`. |
+
+### Interactive API Documentation
+
+Start the backend (`uvicorn backend.app.main:app --port 8000`) and open:
+- **Interactive Swagger UI:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- **OpenAPI 3.1 JSON Schema:** [http://127.0.0.1:8000/openapi.json](http://127.0.0.1:8000/openapi.json)
+- **System Health Check:** [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
+
+*(Note: Reviewers using the frontend can also click the top-header `API Docs ↗` pill or visit `http://localhost:3000/docs`, which automatically redirects to Swagger UI on port 8000).*
+
+### Concrete API Query & Representative Response (`GET /journeys`)
+
+**Example Request:**
+```bash
+curl "http://127.0.0.1:8000/journeys?from=Kashmere%20Gate&to=Nehru%20Place&depart=2026-11-17T08:30:00%2B05:30&k=3"
+```
+
+**Parameters & Accepted Formats:**
+- `from`, `to`: Stop name string (e.g. `Kashmere Gate`) or GPS coordinate pair `lat,lon` (e.g. `28.7180,77.0650`).
+- `depart`: Departure timestamp in ISO-8601 format (e.g. `2026-11-17T08:30:00+05:30`). If timezone offset is omitted, Indian Standard Time (`+05:30`) is applied by default.
+- `k`: Number of diverse alternative itineraries requested (integer from 1 to 5, default 3).
+
+**Representative JSON Response:**
+```json
+{
+  "query": {
+    "from": "Kashmere Gate",
+    "to": "Nehru Place",
+    "depart": "2026-11-17T08:30:00+05:30",
+    "k": 3
+  },
+  "origin": { "name": "Kashmere Gate", "lat": 28.6675, "lng": 77.2285 },
+  "destination": { "name": "Nehru Place", "lat": 28.5492, "lng": 77.2526 },
+  "journeys": [
+    {
+      "option_id": 1,
+      "total_duration_min": 49.8,
+      "estimated_departure": "2026-11-17T08:30:00+05:30",
+      "estimated_arrival": "2026-11-17T09:19:48+05:30",
+      "transfers": 0,
+      "quiet_hour_duration_min": 34.9,
+      "traffic_delay_min": 14.9,
+      "legs": [
+        {
+          "mode": "WALK",
+          "from": "GGS University ISBT Kashmere Gate",
+          "to": "GGS University ISBT Kashmere Gate",
+          "duration_min": 0.0,
+          "distance_m": 0.0
+        },
+        {
+          "mode": "BUS",
+          "route_id": "425CLUP",
+          "route_name": "425CLUP",
+          "from_stop": "GGS University ISBT Kashmere Gate",
+          "to_stop": "Nehru Place",
+          "wait_min": 9.5,
+          "ride_min": 40.3,
+          "stops_count": 26
+        },
+        {
+          "mode": "WALK",
+          "from": "Nehru Place",
+          "to": "Nehru Place",
+          "duration_min": 0.0,
+          "distance_m": 0.0
+        }
+      ]
+    },
+    {
+      "option_id": 2,
+      "total_duration_min": 50.8,
+      "estimated_departure": "2026-11-17T08:30:00+05:30",
+      "estimated_arrival": "2026-11-17T09:20:48+05:30",
+      "transfers": 0,
+      "quiet_hour_duration_min": 34.8,
+      "traffic_delay_min": 16.0,
+      "legs": [
+        {
+          "mode": "BUS",
+          "route_id": "449UP",
+          "route_name": "449UP",
+          "from_stop": "ISBT Kashmere Gate",
+          "to_stop": "Nehru Place",
+          "wait_min": 9.5,
+          "ride_min": 41.3,
+          "stops_count": 27
+        }
+      ]
+    },
+    {
+      "option_id": 3,
+      "total_duration_min": 53.6,
+      "estimated_departure": "2026-11-17T08:30:00+05:30",
+      "estimated_arrival": "2026-11-17T09:23:36+05:30",
+      "transfers": 1,
+      "quiet_hour_duration_min": 37.2,
+      "traffic_delay_min": 16.4,
+      "legs": [
+        {
+          "mode": "BUS",
+          "route_id": "729UP",
+          "route_name": "729UP",
+          "from_stop": "ISBT Kashmere Gate",
+          "to_stop": "Red Fort",
+          "wait_min": 5.5,
+          "ride_min": 4.3,
+          "stops_count": 3
+        },
+        {
+          "mode": "BUS",
+          "route_id": "425UP",
+          "route_name": "425UP",
+          "from_stop": "Red Fort",
+          "to_stop": "Nehru Place",
+          "wait_min": 7.7,
+          "ride_min": 36.1,
+          "stops_count": 23
+        }
+      ]
+    }
+  ]
+}
+```
 
 ---
 
@@ -148,6 +276,11 @@ Recomputed directly from the frozen October 29, 2026 held-out validation dataset
 | **Mean Absolute % Error (MAPE $\ge 10$s)** | $42.82\%$ | $29.05\%$ | $-13.77\text{ pp}$ | Significant variance reduction |
 
 > [!IMPORTANT]
+> **Two Evaluation Levels — Single-Segment vs. Multi-Segment Passenger Journeys:**
+> 1. **Historical Speed Model Validation (Table 5):** Evaluated strictly on **1,147,748 single-segment physical road traversals** on October 29, 2026, delivering a verified **+30.74% MAE reduction** over static GTFS timetables.
+> 2. **Passenger Journey Planning (Section 6):** Evaluates multi-leg origin-destination routes combining walking, frequency-based waiting time, and bus rides. While validated against local empirical baseline models, **live comparison against external commercial APIs (such as Google Maps) remains pending** and is not claimed as verified evidence.
+
+> [!NOTE]
 > **Evaluation Semantics & Unit of Analysis:**
 > - These metrics evaluate **single-segment physical traversals** (individual road links between consecutive bus stops along GTFS shapes), **not multi-segment passenger journeys**.
 > - Each evaluation record represents one vehicle traversing one physical link of the Delhi bus network on Thursday, October 29, 2026 ($n = 1,147,748$).
@@ -175,7 +308,7 @@ OD Pair 1: Kashmere Gate -> Nehru Place (North-South Trunk Corridor)
     • Transfers: 0
     • Indicative Baseline: +14.9 min vs 01:00–05:00 off-peak baseline (34.9 min)
   Option 2 (Direct Bus 449UP): Total 50.8 min | Wait 9.5 min | Bus Ride 41.3 min | Transfers: 0
-  Option 3 (1-Transfer via Red Fort: 210DOWN -> 425UP): Total 58.8 min | Wait 19.0 min | Bus Ride 39.7 min | Transfers: 1
+  Option 3 (1-Transfer via Red Fort: 729UP -> 425UP): Total 53.6 min | Wait 13.2 min | Bus Ride 40.4 min | Transfers: 1
 
 OD Pair 2: Anand Vihar ISBT -> Shivaji Stadium Terminal (East-Central Commuter)
   Option 1 (1-Transfer via Swasthya Vihar: 39AUP -> DS-39DOWN): Total 50.4 min
@@ -245,14 +378,14 @@ OD Pair 3: Rohini Sec 22 (28.7180, 77.0650) -> AIIMS Ring Road (28.5672, 77.2100
 
 ---
 
-## 10. 5–7 Minute Evaluation & Demonstration Script
+## 10. System Evaluation & Demonstration Walkthrough
 
-### Act 1: The Core Problem & Historical Traffic Model (1.5 Minutes)
+### 10.1 Historical Baseline vs. Traffic Model Evaluation
 - **Problem Statement:** Static GTFS schedules assume unrealistically high bus speeds across Delhi's congested arterial corridors (e.g. Punjabi Bagh, ITO, Ring Road), leading to systemic passenger delays and inaccurate journey ETAs.
 - **Solution:** We calibrated 106,160 directional road segments into 5,095,680 time slots using a 4-tier hierarchical fallback pyramid.
 - **Evidence:** Show `docs/03_validation_report.md`. Point to the 1,147,748 held-out ground-truth traversals from October 29: **$24.20\text{s}$ MAE vs $34.94\text{s}$ schedule (+30.74% error reduction)** and **$+1.61\text{s}$ near-zero bias**.
 
-### Act 2: Real-Time GTFS-RT Streaming Pipeline (1.5 Minutes)
+### 10.2 Real-Time Telemetry Processing & Health Checks
 - **Architecture:** Explain Version 3.1 streaming pipeline: spatial snapping (M01–M13), 16-state kinematic transitions (K01–K16), and segment accumulation.
 - **Evidence:** Open `http://localhost:8000/api/telemetry/health`. Highlight:
   - 5,993 entities received, 0 corrupt coordinates, 32 filtered out-of-bounds, 5,961 valid dedup pings.
@@ -260,8 +393,8 @@ OD Pair 3: Rohini Sec 22 (28.7180, 77.0650) -> AIIMS Ring Road (28.5672, 77.2100
   - Zero completed traversals from a single static snapshot (methodological honesty: single snapshots cannot observe physical velocity).
 - **Multi-Snapshot Proof:** Run `python tests/test_multi_snapshot_and_audit.py` to demonstrate controlled two-snapshot vehicle continuity, traversal emission, weighted median estimation, and live/historical blending.
 
-### Act 3: End-to-End Passenger Journey Demonstration (2 Minutes)
-- **Open Frontend:** Navigate to `http://localhost:3001` (Production Server).
+### 10.3 Passenger Journey Planning & Heuristic Route Alternatives
+- **Open Frontend:** Navigate to `http://localhost:3000` (Dev) or `http://localhost:3001` (Production Server).
 - **Corridor 1 (Direct Trunk):** Click `Kashmere Gate → Nehru Place (8:30 AM Tue)`.
   - Point to the 5-component journey breakdown:
     `Access 0m | Exp. Wait 9.5m | Bus Ride 40.3m | Transfer 0m | Egress 0m` $\to$ **Total: 49.8m**.
@@ -272,8 +405,8 @@ OD Pair 3: Rohini Sec 22 (28.7180, 77.0650) -> AIIMS Ring Road (28.5672, 77.2100
   - Show multi-modal execution: 134m access walk (1.9m) + Bus 569EXTDOWN + same-platform transfer at Punjabi Bagh Club + Bus 567DOWN + 429m egress walk (6.0m) = **Total: 106.4m**.
   - Highlight the rounding transparency: individual displayed components (1.9 + 19.0 + 79.6 + 0.0 + 6.0) sum to 106.5m, reflecting independent 0.1m display rounding against the continuous unrounded float total of 106.39m (106.4m).
 
-### Act 4: Telemetry Transparency & Conclusion (1 Minute)
+### 10.4 Telemetry State Transparency & Prototype Conclusion
 - **Telemetry State:** Point to the bottom badge:
   `Archived Telemetry Snapshot • 5,961 vehicles • Feed: 16 Nov 2026, 10:05:23 am • Historical Empirical Tensor (W_eff = 0.0)`.
   Highlight that the UI never misleads the passenger by claiming an archived snapshot is active real-time fleet telemetry.
-- **Final Message:** Delhi Transit Engine provides an open-source, academically rigorous, and production-ready foundation for Delhi's next-generation multimodal transit stack.
+- **Final Message:** Delhi Transit Engine demonstrates a data-driven approach to historical bus travel-time estimation, GTFS-RT telemetry processing, and passenger journey planning.
