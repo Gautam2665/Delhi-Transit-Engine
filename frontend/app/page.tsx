@@ -686,16 +686,22 @@ export default function DelhiTransitInspector() {
                 <div className="mt-3 space-y-2 border-t border-slate-800/80 pt-2.5">
                   {j.legs.map((leg: any, lIdx: number) => {
                     if (leg.mode === "WALK") {
+                      const isFirst = lIdx === 0;
+                      const isLast = lIdx === j.legs.length - 1;
+                      const label = isFirst
+                        ? (leg.from === leg.to ? `Access walk at ${leg.from}` : `Access walk to ${leg.to}`)
+                        : isLast
+                        ? (leg.from === leg.to ? `Egress walk at ${leg.to}` : `Egress walk to ${leg.to}`)
+                        : leg.from === leg.to
+                        ? `Transfer at ${leg.from}`
+                        : `Transfer walk to ${leg.to}`;
+
                       return (
                         <div key={lIdx} className="text-xs flex items-center justify-between gap-2">
                           <div className="flex items-center gap-1.5 truncate">
                             <Footprints className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                             <span className="truncate text-slate-300">
-                              {leg.from === leg.to ? (
-                                <>Access walk at {leg.from}</>
-                              ) : (
-                                <>Walk to {leg.to}</>
-                              )}
+                              {label}
                             </span>
                           </div>
                           <span className="text-slate-400 shrink-0 text-[11px]">

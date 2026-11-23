@@ -39,18 +39,34 @@ def get_leg_shape(request: Request, segment_ids: str = Query(..., description="C
 
     first = seg_meta.get(seg_list[0])
     last = seg_meta.get(seg_list[-1])
-    if not first or not last or first[0] != last[0]:
+    if not first or not last:
         return {"type": "LineString", "coordinates": []}
 
-    line = shapes_utm.get(first[0])
-    if line is None:
-        return {"type": "LineString", "coordinates": []}
-
-    sliced = substring(line, max(0.0, first[1]), min(line.length, last[2]))
     coords = []
-    for x, y in sliced.coords:
-        lon, lat = TO_WGS84.transform(x, y)
-        coords.append([round(lon, 6), round(lat, 6)])
+    # If all segments belong to the same shape_id, do a fast single slice:
+    if first[0] == last[0] and all(seg_meta.get(s, (None,))[0] == first[0] for s in seg_list):
+        line = shapes_utm.get(first[0])
+        if line is not None:
+            sliced = substring(line, max(0.0, first[1]), min(line.length, last[2]))
+            for x, y in sliced.coords:
+                lon, lat = TO_WGS84.transform(x, y)
+                coords.append([round(lon, 6), round(lat, 6)])
+    else:
+        # Segments span multiple shape variants; slice each segment and concatenate points:
+        for sid in seg_list:
+            m = seg_meta.get(sid)
+            if not m:
+                continue
+            shape_id, start_m, end_m = m
+            line = shapes_utm.get(shape_id)
+            if line is None:
+                continue
+            sliced = substring(line, max(0.0, start_m), min(line.length, end_m))
+            for x, y in sliced.coords:
+                lon, lat = TO_WGS84.transform(x, y)
+                pt = [round(lon, 6), round(lat, 6)]
+                if not coords or coords[-1] != pt:
+                    coords.append(pt)
 
     return {"type": "LineString", "coordinates": coords}
 
