@@ -1,10 +1,10 @@
 # Model Validation & Out-of-Sample Performance Report
 
-**Project:** Delhi Transit Engine (Transport Stack Hackathon 2026 — Problem 1)  
-**Evaluation Target:** Held-Out October 29, 2026 (Out-of-Sample Thursday Ground Truth)  
-**Training Set:** Strictly October 1 (Weekday), October 3 (Saturday), October 4 (Sunday)  
-**Status:** Validated — Phase 2 Ingestion & Model Rebuild Accepted  
-**Date:** November 19, 2026  
+- **Project:** Delhi Transit Engine
+- **Hackathon:** Transport Stack Hackathon 2026 — Problem 1
+- **Evaluation Period:** October 29, 2026 (Held-Out Thursday Dataset)
+- **Training Dataset:** October 1, 3 and 4, 2026
+- **Report Date:** November 23, 2026
 
 ---
 
@@ -21,14 +21,16 @@ Across the entire held-out dataset, the empirical speed model reduces Mean Absol
 | **Median Absolute Error (MedAE)** | **14.50 s** | 26.20 s | **44.66%** |
 | **90th Percentile Error (P90)** | **58.90 s** | 76.80 s | **23.31%** |
 | **Mean Bias** | **+1.61 s** | +3.97 s | — |
-| **Mean Absolute Percentage Error (MAPE $\ge 10$s)** | **29.05%** | 42.82% | **13.77 pp** |
+| **Mean Absolute Percentage Error (MAPE $\ge 10$s)\*** | **29.05%** | 42.82% | **13.77 pp** |
+
+*\*Note: MAPE is calculated only for observations with actual traversal duration of at least 10 seconds to prevent division-by-zero artifacts on ultra-short stop links.*
 
 > [!IMPORTANT]
 > **Evaluation Semantics & Unit of Analysis:**
 > The metrics below strictly evaluate **single-segment physical traversals** (individual road links between consecutive bus stops along GTFS shapes), **not multi-segment passenger journeys**. 
 > - Each evaluation record represents one vehicle traversing one physical link of the Delhi bus network on Thursday, October 29, 2026 ($n = 1,147,748$).
 > - The validation Parquet schema was optimized to `[segment_id, dow, hour, duration_sec]` to conserve storage, discarding vehicle IDs and ping timestamps. As demonstrated in `docs/04_od_benchmark_report.md` Investigation A, multi-segment concatenation across this schema produces chimeric sequences across distinct vehicles and multi-hour gaps.
-> - Therefore, while link-level speed predictions are rigorously validated with zero data leakage, continuous multi-link corridor predictions represent static model expectations rather than observed single-vehicle journeys.
+> - Therefore, link-level speed predictions are evaluated using a held-out chronological dataset, with October 29 excluded from the stated training set; continuous multi-link corridor predictions represent static model expectations rather than observed single-vehicle journeys.
 > - The empirical speed model shows near-zero systematic bias (+1.61 seconds), whereas the static GTFS schedule consistently underpredicts delays during peak congestion periods.
 
 ---
@@ -63,7 +65,7 @@ Total Speed-Profile Slots                                   ──> 5,095,680 sl
 
 ## 3. Performance by Confidence Tier (Validation on Oct 29)
 
-In live operation on October 29, the vast majority of bus traversals occur on high-frequency, well-observed segments. Therefore, **94.4% of evaluated traversals utilize empirical Tiers 1–3**:
+During the October 29 held-out evaluation, the vast majority of bus traversals occur on high-frequency, well-observed segments. Therefore, **94.4% of evaluated traversals utilize empirical Tiers 1–3**:
 
 ```mermaid
 pie title Validation Observations by Model Tier
@@ -73,7 +75,7 @@ pie title Validation Observations by Model Tier
     "Tier 4 (Global Default)" : 64309
 ```
 
-| Confidence Tier | Evaluated Obs ($n$) | Share of Traffic | Model MAE | Model RMSE | Median AE | P90 AE | Bias | Gain vs Sched |
+| Confidence Tier | Evaluated Obs ($n$) | Share of Evaluated Traversals | Model MAE | Model RMSE | Median AE | P90 AE | Bias | Gain vs Sched |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Tier 1 (Exact Segment)** | 280,350 | **24.43%** | **20.99 s** | **32.37 s** | 12.7 s | 50.5 s | +2.41 s | **+34.53%** |
 | **Tier 2 (Period Segment)** | 567,519 | **49.45%** | **23.12 s** | **34.78 s** | 14.4 s | 55.4 s | +2.08 s | **+33.22%** |
@@ -81,7 +83,7 @@ pie title Validation Observations by Model Tier
 | **Tier 4 (Global Fallback)**| 64,309 | **5.60%** | **43.29 s** | **60.14 s** | 29.3 s | 104.0 s | -18.46 s | **+5.55%** |
 
 ### Key Methodological Insight:
-Error monotonically decreases as confidence tier increases ($43.29\text{s} \rightarrow 25.40\text{s} \rightarrow 23.12\text{s} \rightarrow 20.99\text{s}$). This validates the hierarchical fallback architecture: when specific historical data exists, accuracy reaches sub-21 second median errors; when falling back to corridors, accuracy remains under 26 seconds.
+Prediction error decreases progressively from Tier 4 (global fallback) to Tier 1 (exact segment and hour) ($43.29\text{s} \rightarrow 25.40\text{s} \rightarrow 23.12\text{s} \rightarrow 20.99\text{s}$), supporting the effectiveness of the hierarchical fallback architecture: when specific historical data exists, accuracy reaches sub-21 second median errors; when falling back to corridors, accuracy remains under 26 seconds.
 
 ---
 
@@ -130,15 +132,15 @@ To maintain complete methodological transparency, the operational scope of valid
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│ VALIDATED EMPIRICALLY (73.88% of live traffic)                                         │
+│ VALIDATED EMPIRICALLY (73.88% of evaluated traversals)                                 │
 │ • 847,869 observations evaluated directly against segment-specific speed profiles     │
 │   derived from observed GPS traversals on training days (Tiers 1 & 2).                 │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
-│ VALIDATED CORRIDOR APPROXIMATION (20.52% of live traffic)                              │
+│ VALIDATED CORRIDOR APPROXIMATION (20.52% of evaluated traversals)                      │
 │ • 235,570 observations evaluated against stop-pair corridor medians across overlapping │
 │   routes sharing the identical physical roadway link (Tier 3).                         │
 ├────────────────────────────────────────────────────────────────────────────────────────┤
-│ MODEL FALLBACK ASSUMPTIONS (5.60% of live traffic)                                     │
+│ MODEL FALLBACK ASSUMPTIONS (5.60% of evaluated traversals)                             │
 │ • 64,309 observations where no GPS traversals were recorded during training for the    │
 │   given corridor, falling back to GTFS schedule scaled by citywide diurnal ratio       │
 │   (Tier 4). Performance on these slots relies primarily on schedule baseline quality.  │
@@ -146,12 +148,12 @@ To maintain complete methodological transparency, the operational scope of valid
 ```
 
 ### Representation in Validation
-- **Total Validated Traversals:** 1,147,748
-- **Unique Static Segments Tested:** 66,097 segments (out of 106,160 total static segments; covering >94.5% of regular scheduled bus trips)
+- **Total Validated Traversals:** 1,147,748 single-segment traversals
+- **Unique Static Segments Tested:** 66,097 segments (out of 106,160 total static segments; these 66,097 segments account for >94.5% of scheduled GTFS trip traversals across the static timetable network)
 - **Unique Static Shapes Tested:** 2,148 shapes
 - **Unique Static Routes Tested:** 2,023 routes
-- **Active Independent Telemetry Vehicles:** 6,319 buses
-- **Active Independent Scheduled Trips:** 96,625 trips
+- **Active Independent Telemetry Vehicles:** 6,319 buses *(recorded in raw source GPS telemetry prior to schema compaction)*
+- **Active Independent Scheduled Trips:** 96,625 trips *(recorded in source operational dispatch records prior to schema compaction; unrecoverable from the reduced validation Parquet)*
 
 ---
 
@@ -168,7 +170,7 @@ Analysis of the top prediction discrepancies ($|y_{\text{true}} - y_{\text{pred}
 | `shp_3_138:1` | 1313 | Stop 917 $\rightarrow$ 7699 | 1,150.1 m | 140.1 s (2.3m) | 632.0 s (10.5m) | 42.0 s | Tier 3 | +491.9 s |
 
 ### Root Cause Analysis:
-1. **Historical Congestion Anomaly in Training:** On corridor `Stop 917` $\rightarrow$ `Stop 7699` ($1.15\text{ km}$ along Punjabi Bagh / Rohtak Road flyover approach), severe traffic disruption or construction during the October 1–4 training period caused buses to crawl at $6.3\text{ km/h}$ ($657\text{ s}$).
+1. **Historical Congestion Anomaly in Training:** On corridor `Stop 917` $\rightarrow$ `Stop 7699` ($1.15\text{ km}$ along Punjabi Bagh / Rohtak Road flyover approach), the October 1–4 training observations show unusually long traversal durations on this corridor, corresponding to an estimated average speed of approximately 6.3 km/h ($657.6\text{ s}$). The available data does not independently establish the underlying cause.
 2. **Normalized Conditions on Validation Day:** On October 29, traffic was free-flowing ($25.0\text{ km/h}$, $148\text{ s}$). The model correctly remembered historical congestion, but without live real-time telemetry, it had no way of anticipating that the bottleneck was cleared.
 3. **Static GTFS Schedule Pathology:** For this $1,150\text{ m}$ segment, the static GTFS schedule specified **$43.0\text{ seconds}$**, implying a commercial bus speed of **$96.3\text{ km/h}$**! This demonstrates that GTFS schedule times are frequently un-calibrated placeholders.
-4. **Live Blending Solution:** This exact failure mode is resolved in the next phase by the **Live Telemetry Blender** (`gtfs_rt_poller.py`), which monitors live vehicle speeds in a rolling 15-minute window and overrides historical congestion when current observations indicate free-flow conditions.
+4. **Live Blending Solution:** The **Live Telemetry Blender** (`backend/app/services/gtfs_rt/blender.py`) is designed to mitigate this failure mode by incorporating recent vehicle observations into historical travel-time estimates. Its effectiveness under continuous real-world operating conditions requires further validation.

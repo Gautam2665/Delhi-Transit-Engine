@@ -375,38 +375,3 @@ OD Pair 3: Rohini Sec 22 (28.7180, 77.0650) -> AIIMS Ring Road (28.5672, 77.2100
 | **Multi-Modal Transit Router** (Dijkstra router on bus graph + footpath walking transfers) | `backend/app/services/router.py` | 5-component journey duration decomposition; diverse alternative itineraries via route penalization; tested across 15 authoritative Delhi OD pairs | **VERIFIED** |
 | **Interactive Operations & Transit Frontend** | `frontend/` (Next.js 16 + MapLibre GL) | Production bundle compiled cleanly; renders dark-vector basemap, telemetry vehicle positions (archived snapshot or active streaming), GeoJSON journey route geometry, and telemetry freshness badge | **VERIFIED** |
 | **External Google Maps Live API Benchmark** | `docs/04_od_benchmark_report.md` Section 8 | Live comparison against Google Maps API not executed due to offline/key restrictions; benchmark template preserved for future field query | **PENDING (NOT VERIFIED)** |
-
----
-
-## 10. System Evaluation & Demonstration Walkthrough
-
-### 10.1 Historical Baseline vs. Traffic Model Evaluation
-- **Problem Statement:** Static GTFS schedules assume unrealistically high bus speeds across Delhi's congested arterial corridors (e.g. Punjabi Bagh, ITO, Ring Road), leading to systemic passenger delays and inaccurate journey ETAs.
-- **Solution:** We calibrated 106,160 directional road segments into 5,095,680 time slots using a 4-tier hierarchical fallback pyramid.
-- **Evidence:** Show `docs/03_validation_report.md`. Point to the 1,147,748 held-out ground-truth traversals from October 29: **$24.20\text{s}$ MAE vs $34.94\text{s}$ schedule (+30.74% error reduction)** and **$+1.61\text{s}$ near-zero bias**.
-
-### 10.2 Real-Time Telemetry Processing & Health Checks
-- **Architecture:** Explain Version 3.1 streaming pipeline: spatial snapping (M01–M13), 16-state kinematic transitions (K01–K16), and segment accumulation.
-- **Evidence:** Open `http://localhost:8000/api/telemetry/health`. Highlight:
-  - 5,993 entities received, 0 corrupt coordinates, 32 filtered out-of-bounds, 5,961 valid dedup pings.
-  - Snapshot initialization: 3,091 active segment buffers opened.
-  - Zero completed traversals from a single static snapshot (methodological honesty: single snapshots cannot observe physical velocity).
-- **Multi-Snapshot Proof:** Run `python tests/test_multi_snapshot_and_audit.py` to demonstrate controlled two-snapshot vehicle continuity, traversal emission, weighted median estimation, and live/historical blending.
-
-### 10.3 Passenger Journey Planning & Heuristic Route Alternatives
-- **Open Frontend:** Navigate to `http://localhost:3000` (Dev) or `http://localhost:3001` (Production Server).
-- **Corridor 1 (Direct Trunk):** Click `Kashmere Gate → Nehru Place (8:30 AM Tue)`.
-  - Point to the 5-component journey breakdown:
-    `Access 0m | Exp. Wait 9.5m | Bus Ride 40.3m | Transfer 0m | Egress 0m` $\to$ **Total: 49.8m**.
-  - Show the cyan route line drawn on the map following the North-South corridor.
-  - Point to the indicative baseline pill: `+14.9m vs 01:00–05:00 off-peak baseline (34.9m)`.
-  - Switch to Option 2 (Direct 449UP, 50.8 min) or Option 3 (1 Transfer via Red Fort, 53.6 min) and show the route geometry updating dynamically.
-- **Corridor 2 (Coordinate Query with Egress Walk):** Enter `28.7180, 77.0650` (Rohini Sec 22) $\to$ `28.5672, 77.2100` (AIIMS Ring Road).
-  - Show multi-modal execution: 134m access walk (1.9m) + Bus 569EXTDOWN + same-platform transfer at Punjabi Bagh Club + Bus 567DOWN + 429m egress walk (6.0m) = **Total: 106.4m**.
-  - Highlight the rounding transparency: individual displayed components (1.9 + 19.0 + 79.6 + 0.0 + 6.0) sum to 106.5m, reflecting independent 0.1m display rounding against the continuous unrounded float total of 106.39m (106.4m).
-
-### 10.4 Telemetry State Transparency & Prototype Conclusion
-- **Telemetry State:** Point to the bottom badge:
-  `Archived Telemetry Snapshot • 5,961 vehicles • Feed: 16 Nov 2026, 10:05:23 am • Historical Empirical Tensor (W_eff = 0.0)`.
-  Highlight that the UI never misleads the passenger by claiming an archived snapshot is active real-time fleet telemetry.
-- **Final Message:** Delhi Transit Engine demonstrates a data-driven approach to historical bus travel-time estimation, GTFS-RT telemetry processing, and passenger journey planning.
