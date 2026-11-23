@@ -495,11 +495,22 @@ export default function DelhiTransitInspector() {
       {/* Sidebar Drawer */}
       <aside className="w-[420px] border-r border-slate-800/80 p-5 flex flex-col gap-4 overflow-y-auto bg-slate-950/95 backdrop-blur-md z-10 shrink-0">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="flex h-2.5 w-2.5 rounded-full bg-sky-400 animate-pulse" />
-            <h1 className="text-base font-bold tracking-tight text-white flex items-center gap-1.5">
-              Delhi Transit Engine
-            </h1>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="flex h-2.5 w-2.5 rounded-full bg-sky-400 animate-pulse" />
+              <h1 className="text-base font-bold tracking-tight text-white flex items-center gap-1.5">
+                Delhi Transit Engine
+              </h1>
+            </div>
+            <a
+              href="http://localhost:8000/docs"
+              target="_blank"
+              rel="noreferrer"
+              className="text-[10px] text-sky-400 hover:text-sky-300 bg-sky-950/60 hover:bg-sky-900/60 border border-sky-800/60 px-2 py-0.5 rounded-md transition font-medium flex items-center gap-1"
+              title="Open interactive Swagger API documentation on port 8000"
+            >
+              API Docs ↗
+            </a>
           </div>
           <p className="text-xs text-slate-400 mt-0.5">
             Empirical GPS Speed Tensor + Live Telemetry Fusion
